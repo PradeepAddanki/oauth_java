@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import java.io.IOException;
@@ -21,16 +18,11 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.*;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
-
 final class ClientCertificate implements IClientCertificate {
 
     private final static int MIN_KEY_SIZE_IN_BITS = 2048;
     public static final String DEFAULT_PKCS12_PASSWORD = "";
 
-    @Accessors(fluent = true)
-    @Getter
     private final PrivateKey privateKey;
 
     private final List<X509Certificate> publicKeyCertificateChain;
@@ -131,5 +123,8 @@ final class ClientCertificate implements IClientCertificate {
         final MessageDigest md = MessageDigest.getInstance("SHA-1");
         md.update(inputBytes);
         return md.digest();
+    }
+    public PrivateKey privateKey() {
+        return this.privateKey;
     }
 }

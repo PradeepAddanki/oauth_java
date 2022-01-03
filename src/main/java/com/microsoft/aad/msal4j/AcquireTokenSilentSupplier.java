@@ -19,24 +19,24 @@ class AcquireTokenSilentSupplier extends AuthenticationResultSupplier {
 
     @Override
     AuthenticationResult execute() throws Exception {
-        Authority requestAuthority = silentRequest.requestAuthority();
+        Authority requestAuthority = silentRequest.getRequestAuthority();
         if (requestAuthority.authorityType != AuthorityType.B2C) {
             requestAuthority =
-                    getAuthorityWithPrefNetworkHost(silentRequest.requestAuthority().authority());
+                    getAuthorityWithPrefNetworkHost(silentRequest.getRequestAuthority().authority());
         }
 
         AuthenticationResult res;
-        if (silentRequest.parameters().account() == null) {
+        if (silentRequest.getParameters().account() == null) {
             res = clientApplication.tokenCache.getCachedAuthenticationResult(
                     requestAuthority,
-                    silentRequest.parameters().scopes(),
+                    silentRequest.getParameters().scopes(),
                     clientApplication.clientId(),
-                    silentRequest.assertion());
+                    silentRequest.getAssertion());
         } else {
             res = clientApplication.tokenCache.getCachedAuthenticationResult(
-                    silentRequest.parameters().account(),
+                    silentRequest.getParameters().account(),
                     requestAuthority,
-                    silentRequest.parameters().scopes(),
+                    silentRequest.getParameters().scopes(),
                     clientApplication.clientId());
 
             if (res == null) {
@@ -52,11 +52,11 @@ class AcquireTokenSilentSupplier extends AuthenticationResultSupplier {
             boolean afterRefreshOn = res.refreshOn() != null && res.refreshOn() > 0 &&
                     res.refreshOn() < currTimeStampSec && res.expiresOn() >= currTimeStampSec;
 
-            if (silentRequest.parameters().forceRefresh() || afterRefreshOn || StringHelper.isBlank(res.accessToken())) {
+            if (silentRequest.getParameters().forceRefresh() || afterRefreshOn || StringHelper.isBlank(res.accessToken())) {
 
                 //As of version 3 of the telemetry schema, there is a field for collecting data about why a token was refreshed,
                 // so here we set the telemetry value based on the cause of the refresh
-                if (silentRequest.parameters().forceRefresh()) {
+                if (silentRequest.getParameters().forceRefresh()) {
                     clientApplication.getServiceBundle().getServerSideTelemetry().getCurrentRequest().cacheInfo(
                             CacheTelemetry.REFRESH_FORCE_REFRESH.telemetryValue);
                 } else if (afterRefreshOn) {
@@ -72,7 +72,7 @@ class AcquireTokenSilentSupplier extends AuthenticationResultSupplier {
 
                 if (!StringHelper.isBlank(res.refreshToken())) {
                     RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(
-                            RefreshTokenParameters.builder(silentRequest.parameters().scopes(), res.refreshToken()).build(),
+                            RefreshTokenParameters.builder(silentRequest.getParameters().scopes(), res.refreshToken()).build(),
                             silentRequest.application(),
                             silentRequest.requestContext(),
                             silentRequest);
@@ -85,7 +85,7 @@ class AcquireTokenSilentSupplier extends AuthenticationResultSupplier {
                     } catch (MsalServiceException ex) {
                         //If the token refresh attempt threw a MsalServiceException but the refresh attempt was done
                         // only because of refreshOn, then simply return the existing cached token
-                        if (afterRefreshOn && !(silentRequest.parameters().forceRefresh() || StringHelper.isBlank(res.accessToken()))) {
+                        if (afterRefreshOn && !(silentRequest.getParameters().forceRefresh() || StringHelper.isBlank(res.accessToken()))) {
                             return res;
                         } else throw ex;
                     }

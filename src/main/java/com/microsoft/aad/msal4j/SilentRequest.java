@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import lombok.Getter;
@@ -9,8 +6,6 @@ import lombok.experimental.Accessors;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-@Accessors(fluent = true)
-@Getter
 class SilentRequest extends MsalRequest {
 
     private SilentParameters parameters;
@@ -34,5 +29,29 @@ class SilentRequest extends MsalRequest {
             application.getServiceBundle().getServerSideTelemetry().getCurrentRequest().cacheInfo(
                     CacheTelemetry.REFRESH_FORCE_REFRESH.telemetryValue);
         }
+    }
+
+    public SilentParameters getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(SilentParameters parameters) {
+        this.parameters = parameters;
+    }
+
+    public IUserAssertion getAssertion() {
+        return assertion;
+    }
+
+    public void setAssertion(IUserAssertion assertion) {
+        this.assertion = assertion;
+    }
+
+    public Authority getRequestAuthority() {
+        return requestAuthority;
+    }
+
+    public void setRequestAuthority(Authority requestAuthority) {
+        this.requestAuthority = requestAuthority;
     }
 }

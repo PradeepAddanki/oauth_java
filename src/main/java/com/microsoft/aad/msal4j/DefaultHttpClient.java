@@ -31,9 +31,9 @@ class DefaultHttpClient implements IHttpClient {
     public IHttpResponse send(HttpRequest httpRequest) throws Exception {
 
         HttpResponse response = null;
-        if (httpRequest.httpMethod() == HttpMethod.GET) {
+        if (httpRequest.getHttpMethod() == HttpMethod.GET) {
             response = executeHttpGet(httpRequest);
-        } else if (httpRequest.httpMethod() == HttpMethod.POST) {
+        } else if (httpRequest.getHttpMethod() == HttpMethod.POST) {
             response = executeHttpPost(httpRequest);
         }
         return response;
@@ -41,7 +41,7 @@ class DefaultHttpClient implements IHttpClient {
 
     private HttpResponse executeHttpGet(HttpRequest httpRequest) throws Exception {
 
-        final HttpsURLConnection conn = openConnection(httpRequest.url());
+        final HttpsURLConnection conn = openConnection(httpRequest.getUrl());
         configureAdditionalHeaders(conn, httpRequest);
 
         return readResponseFromConnection(conn);
@@ -49,7 +49,7 @@ class DefaultHttpClient implements IHttpClient {
 
     private HttpResponse executeHttpPost(HttpRequest httpRequest) throws Exception {
 
-        final HttpsURLConnection conn = openConnection(httpRequest.url());
+        final HttpsURLConnection conn = openConnection(httpRequest.getUrl());
         configureAdditionalHeaders(conn, httpRequest);
         conn.setRequestMethod("POST");
         conn.setDoOutput(true);
@@ -57,7 +57,7 @@ class DefaultHttpClient implements IHttpClient {
         DataOutputStream wr = null;
         try {
             wr = new DataOutputStream(conn.getOutputStream());
-            wr.writeBytes(httpRequest.body());
+            wr.writeBytes(httpRequest.getBody());
             wr.flush();
 
             return readResponseFromConnection(conn);
@@ -88,8 +88,8 @@ class DefaultHttpClient implements IHttpClient {
     }
 
     private void configureAdditionalHeaders(final HttpsURLConnection conn, final HttpRequest httpRequest) {
-        if (httpRequest.headers() != null) {
-            for (final Map.Entry<String, String> entry : httpRequest.headers().entrySet()) {
+        if (httpRequest.getHeaders() != null) {
+            for (final Map.Entry<String, String> entry : httpRequest.getHeaders().entrySet()) {
                 if (entry.getValue() != null) {
                     conn.addRequestProperty(entry.getKey(), entry.getValue());
                 }

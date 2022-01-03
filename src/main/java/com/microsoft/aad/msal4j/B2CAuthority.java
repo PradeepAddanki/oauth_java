@@ -1,16 +1,7 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.net.URL;
 
-@Accessors(fluent = true)
-@Getter(AccessLevel.PACKAGE)
 class B2CAuthority extends Authority {
 
     private final static String AUTHORIZATION_ENDPOINT = "/oauth2/v2.0/authorize";
@@ -19,6 +10,14 @@ class B2CAuthority extends Authority {
     private final static String B2C_AUTHORIZATION_ENDPOINT_FORMAT = "https://%s/%s/%s" + AUTHORIZATION_ENDPOINT;
     private final static String B2C_TOKEN_ENDPOINT_FORMAT = "https://%s/%s" + TOKEN_ENDPOINT + "?p=%s";
     private String policy;
+
+    public String getPolicy() {
+        return policy;
+    }
+
+    public void setPolicy(String policy) {
+        this.policy = policy;
+    }
 
     B2CAuthority(final URL authorityUrl) {
         super(authorityUrl, AuthorityType.B2C);

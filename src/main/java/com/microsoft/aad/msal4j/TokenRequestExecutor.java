@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.nimbusds.oauth2.sdk.ParseException;
@@ -105,7 +102,7 @@ class TokenRequestExecutor {
                                 response.getClientInfo(),
                                 requestAuthority,
                                 idToken,
-                                authority.policy());
+                                authority.getPolicy());
                     } else {
                         accountCacheEntity = AccountCacheEntity.create(
                                 response.getClientInfo(),

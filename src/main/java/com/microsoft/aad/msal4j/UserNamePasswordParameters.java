@@ -1,97 +1,131 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
-import lombok.*;
-import lombok.experimental.Accessors;
-
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import lombok.NonNull;
 
-import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotBlank;
-import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotEmpty;
-import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotNull;
-
-/**
- * Object containing parameters for Username/Password flow. Can be used as parameter to
- * {@link PublicClientApplication#acquireToken(UserNamePasswordParameters)}
- * <p>
- * For more details, see https://aka.ms/msal4j-username-password
- */
-@Builder
-@Accessors(fluent = true)
-@Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserNamePasswordParameters implements IAcquireTokenParameters {
-
-    /**
-     * Scopes application is requesting access to
-     */
     @NonNull
     private Set<String> scopes;
-
-    /**
-     * Username of the account
-     */
     @NonNull
     private String username;
-
-    /**
-     * Char array containing credentials for the username
-     */
     @NonNull
     private char[] password;
-
-    /**
-     * Claims to be requested through the OIDC claims request parameter, allowing requests for standard and custom claims
-     */
     private ClaimsRequest claims;
-
-    /**
-     * Adds additional headers to the token request
-     */
     private Map<String, String> extraHttpHeaders;
-
-    /**
-     * Overrides the tenant value in the authority URL for this request
-     */
     private String tenant;
 
     public char[] password() {
-        return password.clone();
+        return (char[])this.password.clone();
     }
 
-    private static UserNamePasswordParametersBuilder builder() {
-
-        return new UserNamePasswordParametersBuilder();
+    private static UserNamePasswordParameters.UserNamePasswordParametersBuilder builder() {
+        return new UserNamePasswordParameters.UserNamePasswordParametersBuilder();
     }
 
-    /**
-     * Builder for UserNameParameters
-     *
-     * @param scopes   scopes application is requesting access to
-     * @param username username of the account
-     * @param password char array containing credentials for the username
-     * @return builder object that can be used to construct UserNameParameters
-     */
-    public static UserNamePasswordParametersBuilder builder
-    (Set<String> scopes, String username, char[] password) {
+    public static UserNamePasswordParameters.UserNamePasswordParametersBuilder builder(Set<String> scopes, String username, char[] password) {
+        ParameterValidationUtils.validateNotNull("scopes", scopes);
+        ParameterValidationUtils.validateNotBlank("username", username);
+        ParameterValidationUtils.validateNotEmpty("password", password);
+        return builder().scopes(scopes).username(username).password(password);
+    }
 
-        validateNotNull("scopes", scopes);
-        validateNotBlank("username", username);
-        validateNotEmpty("password", password);
+    @NonNull
+    public Set<String> scopes() {
+        return this.scopes;
+    }
 
-        return builder()
-                .scopes(scopes)
-                .username(username)
-                .password(password);
+    @NonNull
+    public String username() {
+        return this.username;
+    }
+
+    public ClaimsRequest claims() {
+        return this.claims;
+    }
+
+    public Map<String, String> extraHttpHeaders() {
+        return this.extraHttpHeaders;
+    }
+
+    public String tenant() {
+        return this.tenant;
+    }
+
+    private UserNamePasswordParameters(@NonNull Set<String> scopes, @NonNull String username, @NonNull char[] password, ClaimsRequest claims, Map<String, String> extraHttpHeaders, String tenant) {
+        if (scopes == null) {
+            throw new NullPointerException("scopes is marked non-null but is null");
+        } else if (username == null) {
+            throw new NullPointerException("username is marked non-null but is null");
+        } else if (password == null) {
+            throw new NullPointerException("password is marked non-null but is null");
+        } else {
+            this.scopes = scopes;
+            this.username = username;
+            this.password = password;
+            this.claims = claims;
+            this.extraHttpHeaders = extraHttpHeaders;
+            this.tenant = tenant;
+        }
     }
 
     public static class UserNamePasswordParametersBuilder {
-        public UserNamePasswordParametersBuilder password(char[] password) {
-            this.password = password.clone();
+        private Set<String> scopes;
+        private String username;
+        private char[] password;
+        private ClaimsRequest claims;
+        private Map<String, String> extraHttpHeaders;
+        private String tenant;
+
+        public UserNamePasswordParameters.UserNamePasswordParametersBuilder password(char[] password) {
+            this.password = (char[])password.clone();
             return this;
+        }
+
+        UserNamePasswordParametersBuilder() {
+        }
+
+        public UserNamePasswordParameters.UserNamePasswordParametersBuilder scopes(@NonNull Set<String> scopes) {
+            if (scopes == null) {
+                throw new NullPointerException("scopes is marked non-null but is null");
+            } else {
+                this.scopes = scopes;
+                return this;
+            }
+        }
+
+        public UserNamePasswordParameters.UserNamePasswordParametersBuilder username(@NonNull String username) {
+            if (username == null) {
+                throw new NullPointerException("username is marked non-null but is null");
+            } else {
+                this.username = username;
+                return this;
+            }
+        }
+
+        public UserNamePasswordParameters.UserNamePasswordParametersBuilder claims(ClaimsRequest claims) {
+            this.claims = claims;
+            return this;
+        }
+
+        public UserNamePasswordParameters.UserNamePasswordParametersBuilder extraHttpHeaders(Map<String, String> extraHttpHeaders) {
+            this.extraHttpHeaders = extraHttpHeaders;
+            return this;
+        }
+
+        public UserNamePasswordParameters.UserNamePasswordParametersBuilder tenant(String tenant) {
+            this.tenant = tenant;
+            return this;
+        }
+
+        public UserNamePasswordParameters build() {
+            return new UserNamePasswordParameters(this.scopes, this.username, this.password, this.claims, this.extraHttpHeaders, this.tenant);
+        }
+
+        public String toString() {
+            Set var10000 = this.scopes;
+            return "UserNamePasswordParameters.UserNamePasswordParametersBuilder(scopes=" + var10000 + ", username=" + this.username + ", password=" + Arrays.toString(this.password) + ", claims=" + this.claims + ", extraHttpHeaders=" + this.extraHttpHeaders + ", tenant=" + this.tenant + ")";
         }
     }
 }

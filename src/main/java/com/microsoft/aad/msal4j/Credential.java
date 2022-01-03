@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,9 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Accessors(fluent = true)
-@Getter
-@Setter
 class Credential {
 
     @JsonProperty("home_account_id")
@@ -25,6 +19,48 @@ class Credential {
     @JsonProperty("secret")
     protected String secret;
 
+    public String getHomeAccountId() {
+        return homeAccountId;
+    }
+
+    public void setHomeAccountId(String homeAccountId) {
+        this.homeAccountId = homeAccountId;
+    }
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    public String getUserAssertionHash() {
+        return userAssertionHash;
+    }
+
+    public void setUserAssertionHash(String userAssertionHash) {
+        this.userAssertionHash = userAssertionHash;
+    }
+
     @JsonProperty("user_assertion_hash")
     protected String userAssertionHash;
+
+
 }

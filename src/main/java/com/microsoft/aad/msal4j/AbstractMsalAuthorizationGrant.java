@@ -1,14 +1,8 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * Abstract class for an MSAL grant.
- */
 abstract class AbstractMsalAuthorizationGrant {
 
     /**

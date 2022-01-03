@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
@@ -158,10 +155,10 @@ class HttpHelper {
 
     private static void addRequestInfoToTelemetry(final HttpRequest httpRequest, HttpEvent httpEvent) {
         try {
-            httpEvent.setHttpPath(httpRequest.url().toURI());
-            httpEvent.setHttpMethod(httpRequest.httpMethod().toString());
-            if (!StringHelper.isBlank(httpRequest.url().getQuery())) {
-                httpEvent.setQueryParameters(httpRequest.url().getQuery());
+            httpEvent.setHttpPath(httpRequest.getUrl().toURI());
+            httpEvent.setHttpMethod(httpRequest.getHttpMethod().toString());
+            if (!StringHelper.isBlank(httpRequest.getUrl().getQuery())) {
+                httpEvent.setQueryParameters(httpRequest.getUrl().getQuery());
             }
         } catch (Exception ex) {
             String correlationId = httpRequest.headerValue(

@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 
@@ -10,9 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.Iterator;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,8 +19,7 @@ import java.util.List;
  */
 public class ClaimsRequest {
 
-    @Getter
-    @Setter
+
     List<RequestedClaim> idTokenRequestedClaims = new ArrayList<>();
 
     List<RequestedClaim> userInfoRequestedClaims = new ArrayList<>();

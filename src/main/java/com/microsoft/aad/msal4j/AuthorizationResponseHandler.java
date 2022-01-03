@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
@@ -19,8 +16,6 @@ import java.io.OutputStream;
 import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
 
-@Getter
-@Accessors(fluent = true)
 class AuthorizationResponseHandler implements HttpHandler {
 
     private final static Logger LOG = LoggerFactory.getLogger(AuthorizationResponseHandler.class);
@@ -82,7 +77,7 @@ class AuthorizationResponseHandler implements HttpHandler {
         if (systemBrowserOptions == null || systemBrowserOptions.browserRedirectSuccess() == null) {
             send200Response(httpExchange, response);
         } else {
-            send302Response(httpExchange, systemBrowserOptions().browserRedirectSuccess().toString());
+            send302Response(httpExchange, systemBrowserOptions.browserRedirectSuccess().toString());
         }
     }
 
@@ -90,7 +85,7 @@ class AuthorizationResponseHandler implements HttpHandler {
         if (systemBrowserOptions == null || systemBrowserOptions.browserRedirectError() == null) {
             send200Response(httpExchange, response);
         } else {
-            send302Response(httpExchange, systemBrowserOptions().browserRedirectError().toString());
+            send302Response(httpExchange, systemBrowserOptions.browserRedirectError().toString());
         }
     }
 
@@ -111,13 +106,13 @@ class AuthorizationResponseHandler implements HttpHandler {
         if (systemBrowserOptions == null || systemBrowserOptions.htmlMessageSuccess() == null) {
             return DEFAULT_SUCCESS_MESSAGE;
         }
-        return systemBrowserOptions().htmlMessageSuccess();
+        return systemBrowserOptions.htmlMessageSuccess();
     }
 
     private String getErrorResponseMessage() {
         if (systemBrowserOptions == null || systemBrowserOptions.htmlMessageError() == null) {
             return DEFAULT_FAILURE_MESSAGE;
         }
-        return systemBrowserOptions().htmlMessageSuccess();
+        return systemBrowserOptions.htmlMessageSuccess();
     }
 }

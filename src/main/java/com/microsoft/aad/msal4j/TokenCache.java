@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,11 +16,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/**
- * Cache used for storing tokens. For more details, see https://aka.ms/msal4j-token-cache
- * <p>
- * Conditionally thread-safe
- */
 public class TokenCache implements ITokenCache {
 
     protected static final int MIN_ACCESS_TOKEN_EXPIRE_IN_SEC = 5 * 60;
@@ -226,16 +218,16 @@ public class TokenCache implements ITokenCache {
         rt.credentialType(CredentialTypeEnum.REFRESH_TOKEN.value());
 
         if (authenticationResult.account() != null) {
-            rt.homeAccountId(authenticationResult.account().homeAccountId());
+            rt.setHomeAccountId(authenticationResult.account().homeAccountId());
         }
 
-        rt.environment(environmentAlias);
-        rt.clientId(tokenRequestExecutor.getMsalRequest().application().clientId());
-        rt.secret(authenticationResult.refreshToken());
+        rt.setEnvironment(environmentAlias);
+        rt.setClientId(tokenRequestExecutor.getMsalRequest().application().clientId());
+        rt.setSecret(authenticationResult.refreshToken());
 
         if (tokenRequestExecutor.getMsalRequest() instanceof OnBehalfOfRequest) {
             OnBehalfOfRequest onBehalfOfRequest = (OnBehalfOfRequest) tokenRequestExecutor.getMsalRequest();
-            rt.userAssertionHash(onBehalfOfRequest.parameters.userAssertion().getAssertionHash());
+            rt.setUserAssertionHash(onBehalfOfRequest.parameters.userAssertion().getAssertionHash());
         }
 
         return rt;
@@ -248,11 +240,11 @@ public class TokenCache implements ITokenCache {
         at.credentialType(CredentialTypeEnum.ACCESS_TOKEN.value());
 
         if (authenticationResult.account() != null) {
-            at.homeAccountId(authenticationResult.account().homeAccountId());
+            at.setHomeAccountId(authenticationResult.account().homeAccountId());
         }
-        at.environment(environmentAlias);
-        at.clientId(tokenRequestExecutor.getMsalRequest().application().clientId());
-        at.secret(authenticationResult.accessToken());
+        at.setEnvironment(environmentAlias);
+        at.setClientId(tokenRequestExecutor.getMsalRequest().application().clientId());
+        at.setSecret(authenticationResult.accessToken());
         at.realm(tokenRequestExecutor.requestAuthority.tenant());
 
         String scopes = !StringHelper.isBlank(authenticationResult.scopes()) ? authenticationResult.scopes() :
@@ -262,7 +254,7 @@ public class TokenCache implements ITokenCache {
 
         if (tokenRequestExecutor.getMsalRequest() instanceof OnBehalfOfRequest) {
             OnBehalfOfRequest onBehalfOfRequest = (OnBehalfOfRequest) tokenRequestExecutor.getMsalRequest();
-            at.userAssertionHash(onBehalfOfRequest.parameters.userAssertion().getAssertionHash());
+            at.setUserAssertionHash(onBehalfOfRequest.parameters.userAssertion().getAssertionHash());
         }
 
         long currTimestampSec = System.currentTimeMillis() / 1000;
@@ -285,16 +277,16 @@ public class TokenCache implements ITokenCache {
         idToken.credentialType(CredentialTypeEnum.ID_TOKEN.value());
 
         if (authenticationResult.account() != null) {
-            idToken.homeAccountId(authenticationResult.account().homeAccountId());
+            idToken.setHomeAccountId(authenticationResult.account().homeAccountId());
         }
-        idToken.environment(environmentAlias);
-        idToken.clientId(tokenRequestExecutor.getMsalRequest().application().clientId());
-        idToken.secret(authenticationResult.idToken());
+        idToken.setEnvironment(environmentAlias);
+        idToken.setClientId(tokenRequestExecutor.getMsalRequest().application().clientId());
+        idToken.setSecret(authenticationResult.idToken());
         idToken.realm(tokenRequestExecutor.requestAuthority.tenant());
 
         if (tokenRequestExecutor.getMsalRequest() instanceof OnBehalfOfRequest) {
             OnBehalfOfRequest onBehalfOfRequest = (OnBehalfOfRequest) tokenRequestExecutor.getMsalRequest();
-            idToken.userAssertionHash(onBehalfOfRequest.parameters.userAssertion().getAssertionHash());
+            idToken.setUserAssertionHash(onBehalfOfRequest.parameters.userAssertion().getAssertionHash());
         }
 
         return idToken;
@@ -332,7 +324,7 @@ public class TokenCache implements ITokenCache {
 
                     ITenantProfile profile = null;
                     if (idToken != null) {
-                        Map<String, ?> idTokenClaims = JWTParser.parse(idToken.secret()).getJWTClaimsSet().getClaims();
+                        Map<String, ?> idTokenClaims = JWTParser.parse(idToken.getSecret()).getJWTClaimsSet().getClaims();
                         profile = new TenantProfile(idTokenClaims, accCached.environment());
                     }
 
@@ -426,9 +418,9 @@ public class TokenCache implements ITokenCache {
     private void removeAccount(IAccount account) {
 
         Predicate<Map.Entry<String, ? extends Credential>> credentialToRemovePredicate =
-                e -> !StringHelper.isBlank(e.getValue().homeAccountId()) &&
-                        !StringHelper.isBlank(e.getValue().environment()) &&
-                        e.getValue().homeAccountId().equals(account.homeAccountId());
+                e -> !StringHelper.isBlank(e.getValue().getHomeAccountId()) &&
+                        !StringHelper.isBlank(e.getValue().getEnvironment()) &&
+                        e.getValue().getHomeAccountId().equals(account.homeAccountId());
 
         accessTokens.entrySet().removeIf(credentialToRemovePredicate);
 
@@ -456,8 +448,8 @@ public class TokenCache implements ITokenCache {
             return true;
         }
 
-        return credential.userAssertionHash() != null &&
-                credential.userAssertionHash().equalsIgnoreCase(userAssertionHash);
+        return credential.getUserAssertionHash() != null &&
+                credential.getUserAssertionHash().equalsIgnoreCase(userAssertionHash);
     }
 
     private boolean userAssertionHashMatches(AccountCacheEntity accountCacheEntity, String userAssertionHash) {

@@ -9,8 +9,6 @@ import com.nimbusds.oauth2.sdk.auth.ClientSecretPost;
 import com.nimbusds.oauth2.sdk.auth.PrivateKeyJWT;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
@@ -22,22 +20,18 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotNull;
 
-/**
- * Class to be used to acquire tokens for confidential client applications (Web Apps, Web APIs,
- * and daemon applications).
- * For details see {@link IConfidentialClientApplication}
- * <p>
- * Conditionally thread-safe
- */
 public class ConfidentialClientApplication extends AbstractClientApplicationBase implements IConfidentialClientApplication {
 
     private ClientAuthentication clientAuthentication;
     private boolean clientCertAuthentication = false;
     private ClientCertificate clientCertificate;
 
-    @Accessors(fluent = true)
-    @Getter
-    private boolean sendX5c;
+     private boolean sendX5c;
+
+    @Override
+    public boolean sendX5c() {
+        return this.sendX5c;
+    }
 
     @Override
     public CompletableFuture<IAuthenticationResult> acquireToken(ClientCredentialParameters parameters) {

@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,9 +8,7 @@ import lombok.Getter;
 import java.util.Base64;
 
 import static com.microsoft.aad.msal4j.Constants.POINT_DELIMITER;
-
-@Getter(AccessLevel.PACKAGE)
-class ClientInfo {
+public class ClientInfo {
 
     @JsonProperty("uid")
     private String uniqueIdentifier;

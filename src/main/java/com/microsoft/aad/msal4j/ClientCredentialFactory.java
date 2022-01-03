@@ -11,10 +11,7 @@ import java.util.List;
 
 import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotNull;
 
-/**
- * Factory for creating client credentials used in confidential client flows. For more details, see
- * https://aka.ms/msal4j-client-credentials
- */
+
 public class ClientCredentialFactory {
 
     /**
@@ -27,32 +24,13 @@ public class ClientCredentialFactory {
         return new ClientSecret(secret);
     }
 
-    /**
-     * Static method to create a {@link ClientCertificate} instance from a certificate
-     *
-     * @param pkcs12Certificate InputStream containing PCKS12 formatted certificate
-     * @param password          certificate password
-     * @return {@link ClientCertificate}
-     * @throws CertificateException
-     * @throws UnrecoverableKeyException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyStoreException
-     * @throws NoSuchProviderException
-     * @throws IOException
-     */
+
     public static IClientCertificate createFromCertificate(final InputStream pkcs12Certificate, final String password)
             throws CertificateException, UnrecoverableKeyException, NoSuchAlgorithmException,
             KeyStoreException, NoSuchProviderException, IOException {
         return ClientCertificate.create(pkcs12Certificate, password);
     }
 
-    /**
-     * Static method to create a {@link ClientCertificate} instance.
-     *
-     * @param key                  RSA private key to sign the assertion.
-     * @param publicKeyCertificate x509 public certificate used for thumbprint
-     * @return {@link ClientCertificate}
-     */
     public static IClientCertificate createFromCertificate(final PrivateKey key, final X509Certificate publicKeyCertificate) {
         validateNotNull("publicKeyCertificate", publicKeyCertificate);
 

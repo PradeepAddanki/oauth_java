@@ -1,15 +1,14 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
 import com.microsoft.aad.msal4j.account.IAccount;
 import com.microsoft.aad.msal4j.result.IAuthenticationResult;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.Accessors;
-import org.slf4j.Logger;
-
-import javax.net.ssl.SSLSocketFactory;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
@@ -20,191 +19,82 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
-
-import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotBlank;
-import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotNull;
+import javax.net.ssl.SSLSocketFactory;
+import org.slf4j.Logger;
 
 public abstract class AbstractClientApplicationBase implements IClientApplicationBase {
-
     protected Logger log;
     protected Authority authenticationAuthority;
     private ServiceBundle serviceBundle;
-
-    @Accessors(fluent = true)
-    @Getter
     private String clientId;
-
-    @Accessors(fluent = true)
-    @Getter
     private String authority;
-
-    @Accessors(fluent = true)
-    @Getter
     private boolean validateAuthority;
-
-    @Accessors(fluent = true)
-    @Getter
     private String correlationId;
-
-    @Accessors(fluent = true)
-    @Getter
     private boolean logPii;
-
-    @Accessors(fluent = true)
-    @Getter(AccessLevel.PACKAGE)
     private Consumer<List<HashMap<String, String>>> telemetryConsumer;
-
-    @Accessors(fluent = true)
-    @Getter
     private Proxy proxy;
-
-    @Accessors(fluent = true)
-    @Getter
     private SSLSocketFactory sslSocketFactory;
-
-    @Accessors(fluent = true)
-    @Getter
     private Integer connectTimeoutForDefaultHttpClient;
-
-    @Accessors(fluent = true)
-    @Getter
     private Integer readTimeoutForDefaultHttpClient;
-
-    @Accessors(fluent = true)
-    @Getter
     protected TokenCache tokenCache;
-
-    @Accessors(fluent = true)
-    @Getter
     private String applicationName;
-
-    @Accessors(fluent = true)
-    @Getter
     private String applicationVersion;
-
-    @Accessors(fluent = true)
-    @Getter
     private AadInstanceDiscoveryResponse aadAadInstanceDiscoveryResponse;
+    private String clientCapabilities;
+    private boolean autoDetectRegion;
+    private String azureRegion;
 
     protected abstract ClientAuthentication clientAuthentication();
 
-    @Accessors(fluent = true)
-    @Getter
-    private String clientCapabilities;
-
-    @Accessors(fluent = true)
-    @Getter
-    private boolean autoDetectRegion;
-
-    @Accessors(fluent = true)
-    @Getter
-    private String azureRegion;
-
-    @Override
     public CompletableFuture<IAuthenticationResult> acquireToken(AuthorizationCodeParameters parameters) {
-
-        validateNotNull("parameters", parameters);
-
-        RequestContext context = new RequestContext(
-                this,
-                PublicApi.ACQUIRE_TOKEN_BY_AUTHORIZATION_CODE,
-                parameters);
-
-        AuthorizationCodeRequest authorizationCodeRequest = new AuthorizationCodeRequest(
-                parameters,
-                this,
-                context);
-
+        ParameterValidationUtils.validateNotNull("parameters", parameters);
+        RequestContext context = new RequestContext(this, PublicApi.ACQUIRE_TOKEN_BY_AUTHORIZATION_CODE, parameters);
+        AuthorizationCodeRequest authorizationCodeRequest = new AuthorizationCodeRequest(parameters, this, context);
         return this.executeRequest(authorizationCodeRequest);
     }
 
-    @Override
     public CompletableFuture<IAuthenticationResult> acquireToken(RefreshTokenParameters parameters) {
-
-        validateNotNull("parameters", parameters);
-
-        RequestContext context = new RequestContext(
-                this,
-                PublicApi.ACQUIRE_TOKEN_BY_REFRESH_TOKEN,
-                parameters);
-
-        RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(
-                parameters,
-                this,
-                context);
-
-        return executeRequest(refreshTokenRequest);
+        ParameterValidationUtils.validateNotNull("parameters", parameters);
+        RequestContext context = new RequestContext(this, PublicApi.ACQUIRE_TOKEN_BY_REFRESH_TOKEN, parameters);
+        RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest(parameters, this, context);
+        return this.executeRequest(refreshTokenRequest);
     }
 
-    @Override
-    public CompletableFuture<IAuthenticationResult> acquireTokenSilently(SilentParameters parameters)
-            throws MalformedURLException {
-
-        validateNotNull("parameters", parameters);
-
+    public CompletableFuture<IAuthenticationResult> acquireTokenSilently(SilentParameters parameters) throws MalformedURLException {
+        ParameterValidationUtils.validateNotNull("parameters", parameters);
         RequestContext context;
         if (parameters.account() != null) {
-            context = new RequestContext(
-                    this,
-                    PublicApi.ACQUIRE_TOKEN_SILENTLY,
-                    parameters,
-                    UserIdentifier.fromHomeAccountId(parameters.account().homeAccountId()));
-
+            context = new RequestContext(this, PublicApi.ACQUIRE_TOKEN_SILENTLY, parameters, UserIdentifier.fromHomeAccountId(parameters.account().homeAccountId()));
         } else {
-            context = new RequestContext(
-                    this,
-                    PublicApi.ACQUIRE_TOKEN_SILENTLY,
-                    parameters);
+            context = new RequestContext(this, PublicApi.ACQUIRE_TOKEN_SILENTLY, parameters);
         }
 
-        SilentRequest silentRequest = new SilentRequest(
-                parameters,
-                this,
-                context,
-                null);
-
-        return executeRequest(silentRequest);
+        SilentRequest silentRequest = new SilentRequest(parameters, this, context, (IUserAssertion)null);
+        return this.executeRequest(silentRequest);
     }
 
-    @Override
     public CompletableFuture<Set<IAccount>> getAccounts() {
-
-        RequestContext context = new RequestContext(this, PublicApi.GET_ACCOUNTS, null);
-        MsalRequest msalRequest =
-                new MsalRequest(this, null, context) {
-                };
-
-        AccountsSupplier supplier = new AccountsSupplier(this, msalRequest);
-
-        return serviceBundle.getExecutorService() != null ?
-                CompletableFuture.supplyAsync(supplier, serviceBundle.getExecutorService()) :
-                CompletableFuture.supplyAsync(supplier);
-    }
-
-    @Override
-    public CompletableFuture<Void> removeAccount(IAccount account) {
-        RequestContext context = new RequestContext(this, PublicApi.REMOVE_ACCOUNTS, null);
-        MsalRequest msalRequest = new MsalRequest(this, null, context) {
+        RequestContext context = new RequestContext(this, PublicApi.GET_ACCOUNTS, (IAcquireTokenParameters)null);
+        MsalRequest msalRequest = new MsalRequest(this, (AbstractMsalAuthorizationGrant)null, context) {
         };
-
-        RemoveAccountRunnable runnable = new RemoveAccountRunnable(msalRequest, account);
-
-        return serviceBundle.getExecutorService() != null ?
-                CompletableFuture.runAsync(runnable, serviceBundle.getExecutorService()) :
-                CompletableFuture.runAsync(runnable);
+        AccountsSupplier supplier = new AccountsSupplier(this, msalRequest);
+        return this.serviceBundle.getExecutorService() != null ? CompletableFuture.supplyAsync(supplier, this.serviceBundle.getExecutorService()) : CompletableFuture.supplyAsync(supplier);
     }
 
-    @Override
+    public CompletableFuture<Void> removeAccount(IAccount account) {
+        RequestContext context = new RequestContext(this, PublicApi.REMOVE_ACCOUNTS, (IAcquireTokenParameters)null);
+        MsalRequest msalRequest = new MsalRequest(this, (AbstractMsalAuthorizationGrant)null, context) {
+        };
+        RemoveAccountRunnable runnable = new RemoveAccountRunnable(msalRequest, account);
+        return this.serviceBundle.getExecutorService() != null ? CompletableFuture.runAsync(runnable, this.serviceBundle.getExecutorService()) : CompletableFuture.runAsync(runnable);
+    }
+
     public URL getAuthorizationRequestUrl(AuthorizationRequestUrlParameters parameters) {
-
-        validateNotNull("parameters", parameters);
-
+        ParameterValidationUtils.validateNotNull("parameters", parameters);
         parameters.requestParameters.put("client_id", Collections.singletonList(this.clientId));
-
-        //If the client application has any client capabilities set, they must be merged into the claims parameter
         if (this.clientCapabilities != null) {
             if (parameters.requestParameters.containsKey("claims")) {
-                String claims = String.valueOf(parameters.requestParameters.get("claims").get(0));
+                String claims = String.valueOf(((List)parameters.requestParameters.get("claims")).get(0));
                 String mergedClaimsCapabilities = JsonHelper.mergeJSONString(claims, this.clientCapabilities);
                 parameters.requestParameters.put("claims", Collections.singletonList(mergedClaimsCapabilities));
             } else {
@@ -212,105 +102,162 @@ public abstract class AbstractClientApplicationBase implements IClientApplicatio
             }
         }
 
-        return parameters.createAuthorizationURL(
-                this.authenticationAuthority,
-                parameters.requestParameters());
+        return parameters.createAuthorizationURL(this.authenticationAuthority, parameters.getRequestParameters());
     }
 
-    CompletableFuture<IAuthenticationResult> executeRequest(
-            MsalRequest msalRequest) {
-
-        AuthenticationResultSupplier supplier = getAuthenticationResultSupplier(msalRequest);
-
-        ExecutorService executorService = serviceBundle.getExecutorService();
-        return executorService != null ?
-                CompletableFuture.supplyAsync(supplier, executorService) :
-                CompletableFuture.supplyAsync(supplier);
-
+    CompletableFuture<IAuthenticationResult> executeRequest(MsalRequest msalRequest) {
+        AuthenticationResultSupplier supplier = this.getAuthenticationResultSupplier(msalRequest);
+        ExecutorService executorService = this.serviceBundle.getExecutorService();
+        return executorService != null ? CompletableFuture.supplyAsync(supplier, executorService) : CompletableFuture.supplyAsync(supplier);
     }
 
-    AuthenticationResult acquireTokenCommon(MsalRequest msalRequest, Authority requestAuthority)
-            throws Exception {
-
+    AuthenticationResult acquireTokenCommon(MsalRequest msalRequest, Authority requestAuthority) throws Exception {
         HttpHeaders headers = msalRequest.headers();
-
-        if (logPii) {
-            log.debug(LogHelper.createMessage(
-                    String.format("Using Client Http Headers: %s", headers),
-                    headers.getHeaderCorrelationIdValue()));
+        if (this.logPii) {
+            this.log.debug(LogHelper.createMessage(String.format("Using Client Http Headers: %s", headers), headers.getHeaderCorrelationIdValue()));
         }
 
-        TokenRequestExecutor requestExecutor = new TokenRequestExecutor(
-                requestAuthority,
-                msalRequest,
-                serviceBundle);
-
+        TokenRequestExecutor requestExecutor = new TokenRequestExecutor(requestAuthority, msalRequest, this.serviceBundle);
         AuthenticationResult result = requestExecutor.executeTokenRequest();
-
-        if (authenticationAuthority.authorityType.equals(AuthorityType.AAD)) {
-            InstanceDiscoveryMetadataEntry instanceDiscoveryMetadata =
-                    AadInstanceDiscoveryProvider.getMetadataEntry(
-                            requestAuthority.canonicalAuthorityUrl(),
-                            validateAuthority,
-                            msalRequest,
-                            serviceBundle);
-
-            tokenCache.saveTokens(requestExecutor, result, instanceDiscoveryMetadata.preferredCache);
+        if (this.authenticationAuthority.authorityType.equals(AuthorityType.AAD)) {
+            InstanceDiscoveryMetadataEntry instanceDiscoveryMetadata = AadInstanceDiscoveryProvider.getMetadataEntry(requestAuthority.canonicalAuthorityUrl(), this.validateAuthority, msalRequest, this.serviceBundle);
+            this.tokenCache.saveTokens(requestExecutor, result, instanceDiscoveryMetadata.preferredCache);
         } else {
-            tokenCache.saveTokens(requestExecutor, result, authenticationAuthority.host);
+            this.tokenCache.saveTokens(requestExecutor, result, this.authenticationAuthority.host);
         }
 
         return result;
     }
 
     private AuthenticationResultSupplier getAuthenticationResultSupplier(MsalRequest msalRequest) {
-
-        AuthenticationResultSupplier supplier;
+        Object supplier;
         if (msalRequest instanceof DeviceCodeFlowRequest) {
-            supplier = new AcquireTokenByDeviceCodeFlowSupplier(
-                    (PublicClientApplication) this,
-                    (DeviceCodeFlowRequest) msalRequest);
+            supplier = new AcquireTokenByDeviceCodeFlowSupplier((PublicClientApplication)this, (DeviceCodeFlowRequest)msalRequest);
         } else if (msalRequest instanceof SilentRequest) {
-            supplier = new AcquireTokenSilentSupplier(this, (SilentRequest) msalRequest);
+            supplier = new AcquireTokenSilentSupplier(this, (SilentRequest)msalRequest);
         } else if (msalRequest instanceof InteractiveRequest) {
-            supplier = new AcquireTokenByInteractiveFlowSupplier(
-                    (PublicClientApplication) this,
-                    (InteractiveRequest) msalRequest);
+            supplier = new AcquireTokenByInteractiveFlowSupplier((PublicClientApplication)this, (InteractiveRequest)msalRequest);
         } else if (msalRequest instanceof ClientCredentialRequest) {
-            supplier = new AcquireTokenByClientCredentialSupplier(
-                    (ConfidentialClientApplication) this,
-                    (ClientCredentialRequest) msalRequest);
+            supplier = new AcquireTokenByClientCredentialSupplier((ConfidentialClientApplication)this, (ClientCredentialRequest)msalRequest);
         } else if (msalRequest instanceof OnBehalfOfRequest) {
-            supplier = new AcquireTokenByOnBehalfOfSupplier(
-                    (ConfidentialClientApplication) this,
-                    (OnBehalfOfRequest) msalRequest);
+            supplier = new AcquireTokenByOnBehalfOfSupplier((ConfidentialClientApplication)this, (OnBehalfOfRequest)msalRequest);
         } else {
-            supplier = new AcquireTokenByAuthorizationGrantSupplier(
-                    this,
-                    msalRequest, null);
+            supplier = new AcquireTokenByAuthorizationGrantSupplier(this, msalRequest, (Authority)null);
         }
-        return supplier;
+
+        return (AuthenticationResultSupplier)supplier;
     }
 
     ServiceBundle getServiceBundle() {
-        return serviceBundle;
+        return this.serviceBundle;
     }
 
     protected static String enforceTrailingSlash(String authority) {
         authority = authority.toLowerCase();
-
         if (!authority.endsWith("/")) {
-            authority += "/";
+            authority = authority + "/";
         }
+
         return authority;
     }
 
-    abstract static class Builder<T extends Builder<T>> {
-        // Required parameters
-        private String clientId;
+    AbstractClientApplicationBase(AbstractClientApplicationBase.Builder<?> builder) {
+        this.clientId = builder.clientId;
+        this.authority = builder.authority;
+        this.validateAuthority = builder.validateAuthority;
+        this.correlationId = builder.correlationId;
+        this.logPii = builder.logPii;
+        this.applicationName = builder.applicationName;
+        this.applicationVersion = builder.applicationVersion;
+        this.telemetryConsumer = builder.telemetryConsumer;
+        this.proxy = builder.proxy;
+        this.sslSocketFactory = builder.sslSocketFactory;
+        this.connectTimeoutForDefaultHttpClient = builder.connectTimeoutForDefaultHttpClient;
+        this.readTimeoutForDefaultHttpClient = builder.readTimeoutForDefaultHttpClient;
+        this.serviceBundle = new ServiceBundle(builder.executorService, (IHttpClient)(builder.httpClient == null ? new DefaultHttpClient(builder.proxy, builder.sslSocketFactory, builder.connectTimeoutForDefaultHttpClient, builder.readTimeoutForDefaultHttpClient) : builder.httpClient), new TelemetryManager(this.telemetryConsumer, builder.onlySendFailureTelemetry));
+        this.authenticationAuthority = builder.authenticationAuthority;
+        this.tokenCache = new TokenCache(builder.tokenCacheAccessAspect);
+        this.aadAadInstanceDiscoveryResponse = builder.aadInstanceDiscoveryResponse;
+        this.clientCapabilities = builder.clientCapabilities;
+        this.autoDetectRegion = builder.autoDetectRegion;
+        this.azureRegion = builder.azureRegion;
+        if (this.aadAadInstanceDiscoveryResponse != null) {
+            AadInstanceDiscoveryProvider.cacheInstanceDiscoveryMetadata(this.authenticationAuthority.host, this.aadAadInstanceDiscoveryResponse);
+        }
 
-        // Optional parameters - initialized to default values
-        private String authority = DEFAULT_AUTHORITY;
+    }
+
+    public String clientId() {
+        return this.clientId;
+    }
+
+    public String authority() {
+        return this.authority;
+    }
+
+    public boolean validateAuthority() {
+        return this.validateAuthority;
+    }
+
+    public String correlationId() {
+        return this.correlationId;
+    }
+
+    public boolean logPii() {
+        return this.logPii;
+    }
+
+    Consumer<List<HashMap<String, String>>> telemetryConsumer() {
+        return this.telemetryConsumer;
+    }
+
+    public Proxy proxy() {
+        return this.proxy;
+    }
+
+    public SSLSocketFactory sslSocketFactory() {
+        return this.sslSocketFactory;
+    }
+
+    public Integer connectTimeoutForDefaultHttpClient() {
+        return this.connectTimeoutForDefaultHttpClient;
+    }
+
+    public Integer readTimeoutForDefaultHttpClient() {
+        return this.readTimeoutForDefaultHttpClient;
+    }
+
+    public TokenCache tokenCache() {
+        return this.tokenCache;
+    }
+
+    public String applicationName() {
+        return this.applicationName;
+    }
+
+    public String applicationVersion() {
+        return this.applicationVersion;
+    }
+
+    public AadInstanceDiscoveryResponse aadAadInstanceDiscoveryResponse() {
+        return this.aadAadInstanceDiscoveryResponse;
+    }
+
+    public String clientCapabilities() {
+        return this.clientCapabilities;
+    }
+
+    public boolean autoDetectRegion() {
+        return this.autoDetectRegion;
+    }
+
+    public String azureRegion() {
+        return this.azureRegion;
+    }
+
+    abstract static class Builder<T extends AbstractClientApplicationBase.Builder<T>> {
+        private String clientId;
+        private String authority = "https://login.microsoftonline.com/common/";
         private Authority authenticationAuthority = createDefaultAADAuthority();
         private boolean validateAuthority = true;
         private String correlationId;
@@ -331,349 +278,155 @@ public abstract class AbstractClientApplicationBase implements IClientApplicatio
         private Integer connectTimeoutForDefaultHttpClient;
         private Integer readTimeoutForDefaultHttpClient;
 
-        /**
-         * Constructor to create instance of Builder of client application
-         *
-         * @param clientId Client ID (Application ID) of the application as registered
-         *                 in the application registration portal (portal.azure.com)
-         */
         public Builder(String clientId) {
-            validateNotBlank("clientId", clientId);
+            ParameterValidationUtils.validateNotBlank("clientId", clientId);
             this.clientId = clientId;
         }
 
         abstract T self();
 
-        /**
-         * Set URL of the authenticating authority or security token service (STS) from which MSAL
-         * will acquire security tokens.
-         * The default value is {@link AbstractClientApplicationBase#DEFAULT_AUTHORITY}
-         *
-         * @param val a string value of authority
-         * @return instance of the Builder on which method was called
-         * @throws MalformedURLException if val is malformed URL
-         */
         public T authority(String val) throws MalformedURLException {
-            authority = enforceTrailingSlash(val);
-
-            URL authorityURL = new URL(authority);
+            this.authority = AbstractClientApplicationBase.enforceTrailingSlash(val);
+            URL authorityURL = new URL(this.authority);
             Authority.validateAuthority(authorityURL);
-
-            switch (Authority.detectAuthorityType(authorityURL)) {
+            switch(Authority.detectAuthorityType(authorityURL)) {
                 case AAD:
-                    authenticationAuthority = new AADAuthority(authorityURL);
+                    this.authenticationAuthority = new AADAuthority(authorityURL);
                     break;
                 case ADFS:
-                    authenticationAuthority = new ADFSAuthority(authorityURL);
+                    this.authenticationAuthority = new ADFSAuthority(authorityURL);
                     break;
                 default:
                     throw new IllegalArgumentException("Unsupported authority type.");
             }
 
-            return self();
+            return this.self();
         }
 
         public T b2cAuthority(String val) throws MalformedURLException {
-            authority = enforceTrailingSlash(val);
-
-            URL authorityURL = new URL(authority);
+            this.authority = AbstractClientApplicationBase.enforceTrailingSlash(val);
+            URL authorityURL = new URL(this.authority);
             Authority.validateAuthority(authorityURL);
-
             if (Authority.detectAuthorityType(authorityURL) != AuthorityType.B2C) {
                 throw new IllegalArgumentException("Unsupported authority type. Please use B2C authority");
+            } else {
+                this.authenticationAuthority = new B2CAuthority(authorityURL);
+                this.validateAuthority = false;
+                return this.self();
             }
-            authenticationAuthority = new B2CAuthority(authorityURL);
-
-            validateAuthority = false;
-            return self();
         }
 
-        /**
-         * Set a boolean value telling the application if the authority needs to be verified
-         * against a list of known authorities. Authority is only validated when:
-         * 1 - It is an Azure Active Directory authority (not B2C or ADFS)
-         * 2 - Instance discovery metadata is not set via {@link AbstractClientApplicationBase#aadAadInstanceDiscoveryResponse}
-         * <p>
-         * The default value is true.
-         *
-         * @param val a boolean value for validateAuthority
-         * @return instance of the Builder on which method was called
-         */
         public T validateAuthority(boolean val) {
-            validateAuthority = val;
-            return self();
+            this.validateAuthority = val;
+            return this.self();
         }
 
-        /**
-         * Set optional correlation id to be used by the API.
-         * If not provided, the API generates a random UUID.
-         *
-         * @param val a string value of correlation id
-         * @return instance of the Builder on which method was called
-         */
         public T correlationId(String val) {
-            validateNotBlank("correlationId", val);
-
-            correlationId = val;
-            return self();
+            ParameterValidationUtils.validateNotBlank("correlationId", val);
+            this.correlationId = val;
+            return this.self();
         }
 
-        /**
-         * Set logPii - boolean value, which determines
-         * whether Pii (personally identifiable information) will be logged in.
-         * The default value is false.
-         *
-         * @param val a boolean value for logPii
-         * @return instance of the Builder on which method was called
-         */
         public T logPii(boolean val) {
-            logPii = val;
-            return self();
+            this.logPii = val;
+            return this.self();
         }
 
-        /**
-         * Sets ExecutorService to be used to execute the requests.
-         * Developer is responsible for maintaining the lifecycle of the ExecutorService.
-         *
-         * @param val an instance of ExecutorService
-         * @return instance of the Builder on which method was called
-         */
         public T executorService(ExecutorService val) {
-            validateNotNull("executorService", val);
-
-            executorService = val;
-            return self();
+            ParameterValidationUtils.validateNotNull("executorService", val);
+            this.executorService = val;
+            return this.self();
         }
 
-        /**
-         * Sets Proxy configuration to be used by the client application (MSAL4J by default uses
-         * {@link javax.net.ssl.HttpsURLConnection}) for all network communication.
-         * If no proxy value is passed in, system defined properties are used. If HTTP client is set on
-         * the client application (via ClientApplication.builder().httpClient()),
-         * proxy configuration should be done on the HTTP client object being passed in,
-         * and not through this method.
-         *
-         * @param val an instance of Proxy
-         * @return instance of the Builder on which method was called
-         */
         public T proxy(Proxy val) {
-            validateNotNull("proxy", val);
-
-            proxy = val;
-            return self();
+            ParameterValidationUtils.validateNotNull("proxy", val);
+            this.proxy = val;
+            return this.self();
         }
 
-        /**
-         * Sets HTTP client to be used by the client application for all HTTP requests. Allows for fine
-         * grained configuration of HTTP client.
-         *
-         * @param val Implementation of {@link IHttpClient}
-         * @return instance of the Builder on which method was called
-         */
         public T httpClient(IHttpClient val) {
-            validateNotNull("httpClient", val);
-
-            httpClient = val;
-            return self();
+            ParameterValidationUtils.validateNotNull("httpClient", val);
+            this.httpClient = val;
+            return this.self();
         }
 
-        /**
-         * Sets SSLSocketFactory to be used by the client application for all network communication.
-         * If HTTP client is set on the client application (via ClientApplication.builder().httpClient()),
-         * any configuration of SSL should be done on the HTTP client and not through this method.
-         *
-         * @param val an instance of SSLSocketFactory
-         * @return instance of the Builder on which method was called
-         */
         public T sslSocketFactory(SSLSocketFactory val) {
-            validateNotNull("sslSocketFactory", val);
-
-            sslSocketFactory = val;
-            return self();
+            ParameterValidationUtils.validateNotNull("sslSocketFactory", val);
+            this.sslSocketFactory = val;
+            return this.self();
         }
 
-        /**
-         * Sets the connect timeout value used in HttpsURLConnection connections made by {@link DefaultHttpClient},
-         * and is not needed if using a custom HTTP client
-         *
-         * @param val timeout value in milliseconds
-         * @return instance of the Builder on which method was called
-         */
         public T connectTimeoutForDefaultHttpClient(Integer val) {
-            validateNotNull("connectTimeoutForDefaultHttpClient", val);
-
-            connectTimeoutForDefaultHttpClient = val;
-            return self();
+            ParameterValidationUtils.validateNotNull("connectTimeoutForDefaultHttpClient", val);
+            this.connectTimeoutForDefaultHttpClient = val;
+            return this.self();
         }
 
-        /**
-         * Sets the read timeout value used in HttpsURLConnection connections made by {@link DefaultHttpClient},
-         * and is not needed if using a custom HTTP client
-         *
-         * @param val timeout value in milliseconds
-         * @return instance of the Builder on which method was called
-         */
         public T readTimeoutForDefaultHttpClient(Integer val) {
-            validateNotNull("readTimeoutForDefaultHttpClient", val);
-
-            readTimeoutForDefaultHttpClient = val;
-            return self();
+            ParameterValidationUtils.validateNotNull("readTimeoutForDefaultHttpClient", val);
+            this.readTimeoutForDefaultHttpClient = val;
+            return this.self();
         }
 
         T telemetryConsumer(Consumer<List<HashMap<String, String>>> val) {
-            validateNotNull("telemetryConsumer", val);
-
-            telemetryConsumer = val;
-            return self();
+            ParameterValidationUtils.validateNotNull("telemetryConsumer", val);
+            this.telemetryConsumer = val;
+            return this.self();
         }
 
         T onlySendFailureTelemetry(Boolean val) {
-
-            onlySendFailureTelemetry = val;
-            return self();
+            this.onlySendFailureTelemetry = val;
+            return this.self();
         }
 
-        /**
-         * Sets application name for telemetry purposes
-         *
-         * @param val application name
-         * @return instance of the Builder on which method was called
-         */
         public T applicationName(String val) {
-            validateNotNull("applicationName", val);
-
-            applicationName = val;
-            return self();
+            ParameterValidationUtils.validateNotNull("applicationName", val);
+            this.applicationName = val;
+            return this.self();
         }
 
-        /**
-         * Sets application version for telemetry purposes
-         *
-         * @param val application version
-         * @return instance of the Builder on which method was called
-         */
         public T applicationVersion(String val) {
-            validateNotNull("applicationVersion", val);
-
-            applicationVersion = val;
-            return self();
+            ParameterValidationUtils.validateNotNull("applicationVersion", val);
+            this.applicationVersion = val;
+            return this.self();
         }
 
-        /**
-         * Sets ITokenCacheAccessAspect to be used for cache_data persistence.
-         *
-         * @param val an instance of ITokenCacheAccessAspect
-         * @return instance of the Builder on which method was called
-         */
         public T setTokenCacheAccessAspect(ITokenCacheAccessAspect val) {
-            validateNotNull("tokenCacheAccessAspect", val);
-
-            tokenCacheAccessAspect = val;
-            return self();
+            ParameterValidationUtils.validateNotNull("tokenCacheAccessAspect", val);
+            this.tokenCacheAccessAspect = val;
+            return this.self();
         }
 
-        /**
-         * Sets instance discovery response data which will be used for determining tenant discovery
-         * endpoint and authority aliases.
-         * <p>
-         * Note that authority validation is not done even if {@link AbstractClientApplicationBase#validateAuthority}
-         * is set to true.
-         * <p>
-         * For more information, see
-         * https://aka.ms/msal4j-instance-discovery
-         *
-         * @param val JSON formatted value of response from AAD instance discovery endpoint
-         * @return instance of the Builder on which method was called
-         */
         public T aadInstanceDiscoveryResponse(String val) {
-            validateNotNull("aadInstanceDiscoveryResponse", val);
-
-            aadInstanceDiscoveryResponse =
-                    AadInstanceDiscoveryProvider.parseInstanceDiscoveryMetadata(val);
-
-            return self();
+            ParameterValidationUtils.validateNotNull("aadInstanceDiscoveryResponse", val);
+            this.aadInstanceDiscoveryResponse = AadInstanceDiscoveryProvider.parseInstanceDiscoveryMetadata(val);
+            return this.self();
         }
 
         private static Authority createDefaultAADAuthority() {
-            Authority authority;
             try {
-                authority = new AADAuthority(new URL(DEFAULT_AUTHORITY));
-            } catch (Exception e) {
-                throw new VasaraCloudException(e);
+                Authority authority = new AADAuthority(new URL("https://login.microsoftonline.com/common/"));
+                return authority;
+            } catch (Exception var2) {
+                throw new VasaraCloudException(var2);
             }
-            return authority;
         }
 
         public T clientCapabilities(Set<String> capabilities) {
-            clientCapabilities = JsonHelper.formCapabilitiesJson(capabilities);
-
-            return self();
+            this.clientCapabilities = JsonHelper.formCapabilitiesJson(capabilities);
+            return this.self();
         }
 
-        /**
-         * Indicates that the library should attempt to discover the Azure region the application is running in when
-         * fetching the instance discovery metadata.
-         * <p>
-         * If the region is found, token requests will be sent to the regional ESTS endpoint rather than the global endpoint.
-         * If region information could not be found, the library will fall back to using the global endpoint, which is also
-         * the default behavior if this value is not set.
-         *
-         * @param val boolean (default is false)
-         * @return instance of the Builder on which method was called
-         */
         public T autoDetectRegion(boolean val) {
-            autoDetectRegion = val;
-            return self();
+            this.autoDetectRegion = val;
+            return this.self();
         }
 
-        /**
-         * Indicates that the library should attempt to fetch the instance discovery metadata from the specified Azure region.
-         * <p>
-         * If the region is valid, token requests will be sent to the regional ESTS endpoint rather than the global endpoint.
-         * If region information could not be verified, the library will fall back to using the global endpoint, which is also
-         * the default behavior if this value is not set.
-         *
-         * @param val String region name
-         * @return instance of the Builder on which method was called
-         */
         public T azureRegion(String val) {
-            azureRegion = val;
-            return self();
+            this.azureRegion = val;
+            return this.self();
         }
 
         abstract AbstractClientApplicationBase build();
-    }
-
-    AbstractClientApplicationBase(Builder<?> builder) {
-        clientId = builder.clientId;
-        authority = builder.authority;
-        validateAuthority = builder.validateAuthority;
-        correlationId = builder.correlationId;
-        logPii = builder.logPii;
-        applicationName = builder.applicationName;
-        applicationVersion = builder.applicationVersion;
-        telemetryConsumer = builder.telemetryConsumer;
-        proxy = builder.proxy;
-        sslSocketFactory = builder.sslSocketFactory;
-        connectTimeoutForDefaultHttpClient = builder.connectTimeoutForDefaultHttpClient;
-        readTimeoutForDefaultHttpClient = builder.readTimeoutForDefaultHttpClient;
-        serviceBundle = new ServiceBundle(
-                builder.executorService,
-                builder.httpClient == null ?
-                        new DefaultHttpClient(builder.proxy, builder.sslSocketFactory, builder.connectTimeoutForDefaultHttpClient, builder.readTimeoutForDefaultHttpClient) :
-                        builder.httpClient,
-                new TelemetryManager(telemetryConsumer, builder.onlySendFailureTelemetry));
-        authenticationAuthority = builder.authenticationAuthority;
-        tokenCache = new TokenCache(builder.tokenCacheAccessAspect);
-        aadAadInstanceDiscoveryResponse = builder.aadInstanceDiscoveryResponse;
-        clientCapabilities = builder.clientCapabilities;
-        autoDetectRegion = builder.autoDetectRegion;
-        azureRegion = builder.azureRegion;
-
-        if (aadAadInstanceDiscoveryResponse != null) {
-            AadInstanceDiscoveryProvider.cacheInstanceDiscoveryMetadata(
-                    authenticationAuthority.host,
-                    aadAadInstanceDiscoveryResponse);
-        }
     }
 }

@@ -1,28 +1,15 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
 import com.nimbusds.oauth2.sdk.util.URLUtils;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.experimental.Accessors;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-/**
- * Parameters for {@link AbstractClientApplicationBase#getAuthorizationRequestUrl(AuthorizationRequestUrlParameters)}
- */
-@Accessors(fluent = true)
-@Getter
 public class AuthorizationRequestUrlParameters {
 
-    @NonNull
     private String redirectUri;
-    @NonNull
     private Set<String> scopes;
     private String codeChallenge;
     private String codeChallengeMethod;
@@ -123,7 +110,7 @@ public class AuthorizationRequestUrlParameters {
         }
 
         if (builder.loginHint != null) {
-            this.loginHint = loginHint();
+            this.loginHint = getLoginHint();
             requestParameters.put("login_hint", Collections.singletonList(builder.loginHint));
 
             // For CCS routing
@@ -132,7 +119,7 @@ public class AuthorizationRequestUrlParameters {
         }
 
         if (builder.domainHint != null) {
-            this.domainHint = domainHint();
+            this.domainHint = getDomainHint();
             requestParameters.put("domain_hint", Collections.singletonList(builder.domainHint));
         }
 
@@ -331,5 +318,108 @@ public class AuthorizationRequestUrlParameters {
             this.instanceAware = val;
             return self();
         }
+    }
+    public String getRedirectUri() {
+        return redirectUri;
+    }
+
+    public void setRedirectUri(String redirectUri) {
+        this.redirectUri = redirectUri;
+    }
+
+    public Set<String> getScopes() {
+        return scopes;
+    }
+
+    public void setScopes(Set<String> scopes) {
+        this.scopes = scopes;
+    }
+
+    public String getCodeChallenge() {
+        return codeChallenge;
+    }
+
+    public void setCodeChallenge(String codeChallenge) {
+        this.codeChallenge = codeChallenge;
+    }
+
+    public String getCodeChallengeMethod() {
+        return codeChallengeMethod;
+    }
+
+    public void setCodeChallengeMethod(String codeChallengeMethod) {
+        this.codeChallengeMethod = codeChallengeMethod;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
+    }
+
+    public ResponseMode getResponseMode() {
+        return responseMode;
+    }
+
+    public void setResponseMode(ResponseMode responseMode) {
+        this.responseMode = responseMode;
+    }
+
+    public String getLoginHint() {
+        return loginHint;
+    }
+
+    public void setLoginHint(String loginHint) {
+        this.loginHint = loginHint;
+    }
+
+    public String getDomainHint() {
+        return domainHint;
+    }
+
+    public void setDomainHint(String domainHint) {
+        this.domainHint = domainHint;
+    }
+
+    public Prompt getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(Prompt prompt) {
+        this.prompt = prompt;
+    }
+
+    public String getCorrelationId() {
+        return correlationId;
+    }
+
+    public void setCorrelationId(String correlationId) {
+        this.correlationId = correlationId;
+    }
+
+    public boolean isInstanceAware() {
+        return instanceAware;
+    }
+
+    public void setInstanceAware(boolean instanceAware) {
+        this.instanceAware = instanceAware;
+    }
+
+    public Map<String, List<String>> getRequestParameters() {
+        return requestParameters;
+    }
+
+    public void setRequestParameters(Map<String, List<String>> requestParameters) {
+        this.requestParameters = requestParameters;
     }
 }

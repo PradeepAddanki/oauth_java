@@ -1,18 +1,9 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.client.IClientSecret;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
-@EqualsAndHashCode
 final class ClientSecret implements IClientSecret {
 
-    @Accessors(fluent = true)
-    @Getter
     private final String clientSecret;
 
     /**
@@ -26,5 +17,9 @@ final class ClientSecret implements IClientSecret {
         }
 
         this.clientSecret = clientSecret;
+    }
+
+    public String clientSecret() {
+        return this.clientSecret;
     }
 }

@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
@@ -12,6 +9,14 @@ import static com.microsoft.aad.msal4j.AuthenticationErrorCode.AUTHORIZATION_PEN
 class AcquireTokenByDeviceCodeFlowSupplier extends AuthenticationResultSupplier {
 
     private DeviceCodeFlowRequest deviceCodeFlowRequest;
+
+    public DeviceCodeFlowRequest getDeviceCodeFlowRequest() {
+        return deviceCodeFlowRequest;
+    }
+
+    public void setDeviceCodeFlowRequest(DeviceCodeFlowRequest deviceCodeFlowRequest) {
+        this.deviceCodeFlowRequest = deviceCodeFlowRequest;
+    }
 
     AcquireTokenByDeviceCodeFlowSupplier(PublicClientApplication clientApplication,
                                          DeviceCodeFlowRequest deviceCodeFlowRequest) {
@@ -37,7 +42,7 @@ class AcquireTokenByDeviceCodeFlowSupplier extends AuthenticationResultSupplier 
                 deviceCodeFlowRequest.headers().getReadonlyHeaderMap(),
                 this.clientApplication.getServiceBundle());
 
-        deviceCodeFlowRequest.parameters().deviceCodeConsumer().accept(deviceCode);
+        deviceCodeFlowRequest.getParameters().deviceCodeConsumer().accept(deviceCode);
 
         return deviceCode;
     }
@@ -54,7 +59,7 @@ class AcquireTokenByDeviceCodeFlowSupplier extends AuthenticationResultSupplier 
                         requestAuthority);
 
         while (getCurrentSystemTimeInSeconds() < expirationTimeInSeconds) {
-            if (deviceCodeFlowRequest.futureReference().get().isCancelled()) {
+            if (deviceCodeFlowRequest.getFutureReference().get().isCancelled()) {
                 throw new InterruptedException("Acquire token Device Code Flow was interrupted");
             }
             try {

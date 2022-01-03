@@ -1,13 +1,7 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.result.IAuthenticationResult;
 import com.nimbusds.oauth2.sdk.util.URLUtils;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,15 +9,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
-
-@Accessors(fluent = true)
-@Getter(AccessLevel.PACKAGE)
 class DeviceCodeFlowRequest extends MsalRequest {
 
     private AtomicReference<CompletableFuture<IAuthenticationResult>> futureReference;
 
     private DeviceCodeFlowParameters parameters;
     private String scopesStr;
+
+    public AtomicReference<CompletableFuture<IAuthenticationResult>> getFutureReference() {
+        return futureReference;
+    }
+
+    public void setFutureReference(AtomicReference<CompletableFuture<IAuthenticationResult>> futureReference) {
+        this.futureReference = futureReference;
+    }
+
+    public DeviceCodeFlowParameters getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(DeviceCodeFlowParameters parameters) {
+        this.parameters = parameters;
+    }
+
+    public String getScopesStr() {
+        return scopesStr;
+    }
+
+    public void setScopesStr(String scopesStr) {
+        this.scopesStr = scopesStr;
+    }
 
     DeviceCodeFlowRequest(DeviceCodeFlowParameters parameters,
                           AtomicReference<CompletableFuture<IAuthenticationResult>> futureReference,

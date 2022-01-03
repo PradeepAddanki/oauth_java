@@ -1,22 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
-/**
- * Contains information about outgoing HTTP request. Should be adapted to HTTP request for HTTP
- * client of choice
- */
-@Getter
-@Accessors(fluent = true)
+
 public class HttpRequest {
 
     /**
@@ -38,6 +28,38 @@ public class HttpRequest {
      * HTTP request body
      */
     private String body;
+
+    public HttpMethod getHttpMethod() {
+        return httpMethod;
+    }
+
+    public void setHttpMethod(HttpMethod httpMethod) {
+        this.httpMethod = httpMethod;
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
 
     HttpRequest(HttpMethod httpMethod, String url) {
         this.httpMethod = httpMethod;

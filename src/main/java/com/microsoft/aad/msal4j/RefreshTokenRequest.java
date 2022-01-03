@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.nimbusds.oauth2.sdk.RefreshTokenGrant;
@@ -43,12 +40,12 @@ class RefreshTokenRequest extends MsalRequest {
 
         sb.append(application().clientId() + POINT_DELIMITER);
 
-        String authority = (parentSilentRequest != null && parentSilentRequest.requestAuthority() != null)
-                ? parentSilentRequest.requestAuthority().authority() : application().authority();
+        String authority = (parentSilentRequest != null && parentSilentRequest.getRequestAuthority() != null)
+                ? parentSilentRequest.getRequestAuthority().authority() : application().authority();
         sb.append(authority + POINT_DELIMITER);
 
-        if (parentSilentRequest != null && parentSilentRequest.parameters().account() != null) {
-            sb.append(parentSilentRequest.parameters().account().homeAccountId() + POINT_DELIMITER);
+        if (parentSilentRequest != null && parentSilentRequest.getParameters().account() != null) {
+            sb.append(parentSilentRequest.getParameters().account().homeAccountId() + POINT_DELIMITER);
         }
 
         sb.append(parameters.refreshToken() + POINT_DELIMITER);

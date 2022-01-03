@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
@@ -92,14 +89,14 @@ class AcquireTokenByInteractiveFlowSupplier extends AuthenticationResultSupplier
 
         //If no port is passed, http listener finds a free one. We should update redirect URL to
         // point to this port.
-        if (port != httpListener.port()) {
+        if (port != httpListener.getPort()) {
             updateRedirectUrl();
         }
     }
 
     private void updateRedirectUrl() {
         try {
-            URI updatedRedirectUrl = new URI("http://localhost:" + httpListener.port());
+            URI updatedRedirectUrl = new URI("http://localhost:" + httpListener.getPort());
             interactiveRequest.interactiveRequestParameters().redirectUri(updatedRedirectUrl);
             LOG.debug("Redirect URI updated to" + updatedRedirectUrl);
         } catch (URISyntaxException ex) {
