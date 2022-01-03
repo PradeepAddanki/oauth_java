@@ -4,8 +4,6 @@ import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +60,7 @@ class AuthorizationResponseHandler implements HttpHandler {
     private void sendResponse(HttpExchange httpExchange, AuthorizationResult result)
             throws IOException {
 
-        switch (result.status()) {
+        switch (result.getStatus()) {
             case Success:
                 sendSuccessResponse(httpExchange, getSuccessfulResponseMessage());
                 break;

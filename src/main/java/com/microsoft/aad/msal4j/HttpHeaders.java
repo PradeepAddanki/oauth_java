@@ -44,13 +44,13 @@ final class HttpHeaders {
     private Map<String, String> headerMap = new HashMap<>();
 
     HttpHeaders(final RequestContext requestContext) {
-        correlationIdHeaderValue = requestContext.correlationId();
-        applicationNameHeaderValue = requestContext.applicationName();
-        applicationVersionHeaderValue = requestContext.applicationVersion();
+        correlationIdHeaderValue = requestContext.getCorrelationId();
+        applicationNameHeaderValue = requestContext.getApplicationName();
+        applicationVersionHeaderValue = requestContext.getApplicationVersion();
 
-        if (requestContext.userIdentifier() != null) {
-            String upn = requestContext.userIdentifier().upn();
-            String oid = requestContext.userIdentifier().oid();
+        if (requestContext.getUserIdentifier() != null) {
+            String upn = requestContext.getUserIdentifier().upn();
+            String oid = requestContext.getUserIdentifier().oid();
             if (!StringHelper.isBlank(upn)) {
                 anchorMailboxHeaderValue = String.format(X_ANCHOR_MAILBOX_UPN_FORMAT, upn);
             } else if (!StringHelper.isBlank(oid)) {
@@ -58,9 +58,9 @@ final class HttpHeaders {
             }
         }
 
-        Map<String, String> extraHttpHeaders = requestContext.apiParameters() == null ?
+        Map<String, String> extraHttpHeaders = requestContext.getApiParameters() == null ?
                 null :
-                requestContext.apiParameters().extraHttpHeaders();
+                requestContext.getApiParameters().extraHttpHeaders();
         this.initializeHeaders(extraHttpHeaders);
     }
 

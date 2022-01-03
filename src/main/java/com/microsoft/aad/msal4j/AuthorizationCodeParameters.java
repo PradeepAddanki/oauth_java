@@ -1,85 +1,133 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
-
-import lombok.*;
-import lombok.experimental.Accessors;
 
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
-import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotBlank;
 
-/**
- * Object containing parameters for authorization code flow. Can be used as parameter to
- * {@link PublicClientApplication#acquireToken(AuthorizationCodeParameters)} or to
- * {@link ConfidentialClientApplication#acquireToken(AuthorizationCodeParameters)}
- */
-@Builder
-@Accessors(fluent = true)
-@Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthorizationCodeParameters implements IAcquireTokenParameters {
-
-    /**
-     * Authorization code acquired in the first step of OAuth2.0 authorization code flow. For more
-     * details, see https://aka.ms/msal4j-authorization-code-flow
-     */
-    @NonNull
     private String authorizationCode;
-
-    /**
-     * Redirect URI registered in the Azure portal, and which was used in the first step of OAuth2.0
-     * authorization code flow. For more details, see https://aka.ms/msal4j-authorization-code-flow
-     */
-    @NonNull
     private URI redirectUri;
-
-    /**
-     * Scopes to which the application is requesting access
-     */
     private Set<String> scopes;
-
-    /**
-     * Claims to be requested through the OIDC claims request parameter, allowing requests for standard and custom claims
-     */
     private ClaimsRequest claims;
-
-    /**
-     * Code verifier used for PKCE. For more details, see https://tools.ietf.org/html/rfc7636
-     */
     private String codeVerifier;
-
-    /**
-     * Adds additional headers to the token request
-     */
     private Map<String, String> extraHttpHeaders;
-
-    /**
-     * Overrides the tenant value in the authority URL for this request
-     */
     private String tenant;
 
-    private static AuthorizationCodeParametersBuilder builder() {
-
-        return new AuthorizationCodeParametersBuilder();
+    private static AuthorizationCodeParameters.AuthorizationCodeParametersBuilder builder() {
+        return new AuthorizationCodeParameters.AuthorizationCodeParametersBuilder();
     }
 
-    /**
-     * Builder for {@link AuthorizationCodeParameters}
-     *
-     * @param authorizationCode code received from the service authorization endpoint
-     * @param redirectUri       URI where authorization code was received
-     * @return builder object that can be used to construct {@link AuthorizationCodeParameters}
-     */
-    public static AuthorizationCodeParametersBuilder builder(String authorizationCode, URI redirectUri) {
+    public static AuthorizationCodeParameters.AuthorizationCodeParametersBuilder builder(String authorizationCode, URI redirectUri) {
+        ParameterValidationUtils.validateNotBlank("authorizationCode", authorizationCode);
+        return builder().authorizationCode(authorizationCode).redirectUri(redirectUri);
+    }
 
-        validateNotBlank("authorizationCode", authorizationCode);
+    public String authorizationCode() {
+        return this.authorizationCode;
+    }
 
-        return builder()
-                .authorizationCode(authorizationCode)
-                .redirectUri(redirectUri);
+    public URI redirectUri() {
+        return this.redirectUri;
+    }
+
+    public Set<String> scopes() {
+        return this.scopes;
+    }
+
+    public ClaimsRequest claims() {
+        return this.claims;
+    }
+
+    public String codeVerifier() {
+        return this.codeVerifier;
+    }
+
+    public Map<String, String> extraHttpHeaders() {
+        return this.extraHttpHeaders;
+    }
+
+    public String tenant() {
+        return this.tenant;
+    }
+
+    private AuthorizationCodeParameters(String authorizationCode, URI redirectUri, Set<String> scopes, ClaimsRequest claims, String codeVerifier, Map<String, String> extraHttpHeaders, String tenant) {
+        if (authorizationCode == null) {
+            throw new NullPointerException("authorizationCode is marked non-null but is null");
+        } else if (redirectUri == null) {
+            throw new NullPointerException("redirectUri is marked non-null but is null");
+        } else {
+            this.authorizationCode = authorizationCode;
+            this.redirectUri = redirectUri;
+            this.scopes = scopes;
+            this.claims = claims;
+            this.codeVerifier = codeVerifier;
+            this.extraHttpHeaders = extraHttpHeaders;
+            this.tenant = tenant;
+        }
+    }
+
+    public static class AuthorizationCodeParametersBuilder {
+        private String authorizationCode;
+        private URI redirectUri;
+        private Set<String> scopes;
+        private ClaimsRequest claims;
+        private String codeVerifier;
+        private Map<String, String> extraHttpHeaders;
+        private String tenant;
+
+        AuthorizationCodeParametersBuilder() {
+        }
+
+        public AuthorizationCodeParameters.AuthorizationCodeParametersBuilder authorizationCode(String authorizationCode) {
+            if (authorizationCode == null) {
+                throw new NullPointerException("authorizationCode is marked non-null but is null");
+            } else {
+                this.authorizationCode = authorizationCode;
+                return this;
+            }
+        }
+
+        public AuthorizationCodeParameters.AuthorizationCodeParametersBuilder redirectUri(URI redirectUri) {
+            if (redirectUri == null) {
+                throw new NullPointerException("redirectUri is marked non-null but is null");
+            } else {
+                this.redirectUri = redirectUri;
+                return this;
+            }
+        }
+
+        public AuthorizationCodeParameters.AuthorizationCodeParametersBuilder scopes(Set<String> scopes) {
+            this.scopes = scopes;
+            return this;
+        }
+
+        public AuthorizationCodeParameters.AuthorizationCodeParametersBuilder claims(ClaimsRequest claims) {
+            this.claims = claims;
+            return this;
+        }
+
+        public AuthorizationCodeParameters.AuthorizationCodeParametersBuilder codeVerifier(String codeVerifier) {
+            this.codeVerifier = codeVerifier;
+            return this;
+        }
+
+        public AuthorizationCodeParameters.AuthorizationCodeParametersBuilder extraHttpHeaders(Map<String, String> extraHttpHeaders) {
+            this.extraHttpHeaders = extraHttpHeaders;
+            return this;
+        }
+
+        public AuthorizationCodeParameters.AuthorizationCodeParametersBuilder tenant(String tenant) {
+            this.tenant = tenant;
+            return this;
+        }
+
+        public AuthorizationCodeParameters build() {
+            return new AuthorizationCodeParameters(this.authorizationCode, this.redirectUri, this.scopes, this.claims, this.codeVerifier, this.extraHttpHeaders, this.tenant);
+        }
+
+        public String toString() {
+            return "AuthorizationCodeParameters.AuthorizationCodeParametersBuilder(authorizationCode=" + this.authorizationCode + ", redirectUri=" + this.redirectUri + ", scopes=" + this.scopes + ", claims=" + this.claims + ", codeVerifier=" + this.codeVerifier + ", extraHttpHeaders=" + this.extraHttpHeaders + ", tenant=" + this.tenant + ")";
+        }
     }
 }

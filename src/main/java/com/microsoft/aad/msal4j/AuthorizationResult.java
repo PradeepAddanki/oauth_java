@@ -1,20 +1,11 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.net.URLDecoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Getter
-@Setter
-@Accessors(fluent = true)
 class AuthorizationResult {
 
     private String code;
@@ -98,5 +89,53 @@ class AuthorizationResult {
         }
 
         return query_pairs;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public AuthorizationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AuthorizationStatus status) {
+        this.status = status;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public String getErrorDescription() {
+        return errorDescription;
+    }
+
+    public void setErrorDescription(String errorDescription) {
+        this.errorDescription = errorDescription;
+    }
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
     }
 }

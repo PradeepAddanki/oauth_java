@@ -36,8 +36,8 @@ class HttpHelper {
         IHttpResponse httpResponse;
 
         try (TelemetryHelper telemetryHelper = serviceBundle.getTelemetryManager().createTelemetryHelper(
-                requestContext.telemetryRequestId(),
-                requestContext.clientId(),
+                requestContext.getTelemetryRequestId(),
+                requestContext.getClientId(),
                 httpEvent,
                 false)) {
 
@@ -65,10 +65,10 @@ class HttpHelper {
 
     private static String getRequestThumbprint(RequestContext requestContext) {
         StringBuilder sb = new StringBuilder();
-        sb.append(requestContext.clientId() + POINT_DELIMITER);
-        sb.append(requestContext.authority() + POINT_DELIMITER);
+        sb.append(requestContext.getClientId() + POINT_DELIMITER);
+        sb.append(requestContext.getAuthority() + POINT_DELIMITER);
 
-        IAcquireTokenParameters apiParameters = requestContext.apiParameters();
+        IAcquireTokenParameters apiParameters = requestContext.getApiParameters();
 
         if (apiParameters instanceof SilentParameters) {
             IAccount account = ((SilentParameters) apiParameters).account();
@@ -102,8 +102,8 @@ class HttpHelper {
     }
 
     private static void checkForThrottling(RequestContext requestContext) {
-        if (requestContext.clientApplication() instanceof PublicClientApplication &&
-                requestContext.apiParameters() != null) {
+        if (requestContext.getClientApplication() instanceof PublicClientApplication &&
+                requestContext.getApiParameters() != null) {
             String requestThumbprint = getRequestThumbprint(requestContext);
 
             long retryInMs = ThrottlingCache.retryInMs(requestThumbprint);
@@ -115,7 +115,7 @@ class HttpHelper {
     }
 
     private static void processThrottlingInstructions(IHttpResponse httpResponse, RequestContext requestContext) {
-        if (requestContext.clientApplication() instanceof PublicClientApplication) {
+        if (requestContext.getClientApplication() instanceof PublicClientApplication) {
             Long expirationTimestamp = null;
 
             Integer retryAfterHeaderVal = getRetryAfterHeader(httpResponse);

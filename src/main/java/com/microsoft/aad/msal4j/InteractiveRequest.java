@@ -1,13 +1,7 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
 import com.microsoft.aad.msal4j.result.IAuthenticationResult;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -18,19 +12,15 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
-@Accessors(fluent = true)
+
 class InteractiveRequest extends MsalRequest {
 
-    @Getter(AccessLevel.PACKAGE)
     private AtomicReference<CompletableFuture<IAuthenticationResult>> futureReference;
 
-    @Getter(AccessLevel.PACKAGE)
     private InteractiveRequestParameters interactiveRequestParameters;
 
-    @Getter(AccessLevel.PACKAGE)
     private String verifier;
 
-    @Getter(AccessLevel.PACKAGE)
     private String state;
 
     private PublicClientApplication publicClientApplication;
@@ -109,5 +99,53 @@ class InteractiveRequest extends MsalRequest {
         builder.codeChallenge(StringHelper.createBase64EncodedSha256Hash(verifier))
                 .codeChallengeMethod("S256")
                 .state(state);
+    }
+
+    public AtomicReference<CompletableFuture<IAuthenticationResult>> getFutureReference() {
+        return futureReference;
+    }
+
+    public void setFutureReference(AtomicReference<CompletableFuture<IAuthenticationResult>> futureReference) {
+        this.futureReference = futureReference;
+    }
+
+    public InteractiveRequestParameters getInteractiveRequestParameters() {
+        return interactiveRequestParameters;
+    }
+
+    public void setInteractiveRequestParameters(InteractiveRequestParameters interactiveRequestParameters) {
+        this.interactiveRequestParameters = interactiveRequestParameters;
+    }
+
+    public String getVerifier() {
+        return verifier;
+    }
+
+    public void setVerifier(String verifier) {
+        this.verifier = verifier;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public PublicClientApplication getPublicClientApplication() {
+        return publicClientApplication;
+    }
+
+    public void setPublicClientApplication(PublicClientApplication publicClientApplication) {
+        this.publicClientApplication = publicClientApplication;
+    }
+
+    public URL getAuthorizationUrl() {
+        return authorizationUrl;
+    }
+
+    public void setAuthorizationUrl(URL authorizationUrl) {
+        this.authorizationUrl = authorizationUrl;
     }
 }

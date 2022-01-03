@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import lombok.*;
@@ -23,20 +20,9 @@ import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotNull;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class DeviceCodeFlowParameters implements IAcquireTokenParameters {
 
-    /**
-     * Scopes to which the application is requesting access to.
-     */
-    @NonNull
+
     private Set<String> scopes;
 
-    /**
-     * Receives the device code returned from the first step of Oauth2.0 device code flow. The
-     * {@link DeviceCode#verificationUri} and the {@link DeviceCode#userCode} should be shown
-     * to the end user.
-     * <p>
-     * For more details, see https://aka.ms/msal4j-device-code
-     */
-    @NonNull
     private Consumer<DeviceCode> deviceCodeConsumer;
 
     /**
@@ -59,13 +45,7 @@ public class DeviceCodeFlowParameters implements IAcquireTokenParameters {
         return new DeviceCodeFlowParametersBuilder();
     }
 
-    /**
-     * Builder for {@link DeviceCodeFlowParameters}
-     *
-     * @param scopes             scopes application is requesting access to
-     * @param deviceCodeConsumer {@link Consumer} of {@link DeviceCode}
-     * @return builder that can be used to construct DeviceCodeFlowParameters
-     */
+
     public static DeviceCodeFlowParametersBuilder builder
     (Set<String> scopes, Consumer<DeviceCode> deviceCodeConsumer) {
 

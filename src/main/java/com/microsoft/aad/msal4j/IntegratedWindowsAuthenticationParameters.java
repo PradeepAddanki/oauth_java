@@ -1,76 +1,109 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
-
-import lombok.*;
-import lombok.experimental.Accessors;
 
 import java.util.Map;
 import java.util.Set;
 
-import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotBlank;
-import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotNull;
 
-/**
- * Object containing parameters for Integrated Windows Authentication. Can be used as parameter to
- * {@link PublicClientApplication#acquireToken(IntegratedWindowsAuthenticationParameters)}`
- * <p>
- * For more details, see https://aka.ms/msal4j-iwa
- */
-@Builder
-@Accessors(fluent = true)
-@Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class IntegratedWindowsAuthenticationParameters implements IAcquireTokenParameters {
-
-    /**
-     * Scopes that the application is requesting access to
-     */
-    @NonNull
     private Set<String> scopes;
-
-    /**
-     * Identifier of user account for which to acquire tokens for
-     */
-    @NonNull
     private String username;
-
-    /**
-     * Claims to be requested through the OIDC claims request parameter, allowing requests for standard and custom claims
-     */
     private ClaimsRequest claims;
-
-    /**
-     * Adds additional headers to the token request
-     */
     private Map<String, String> extraHttpHeaders;
-
-    /**
-     * Overrides the tenant value in the authority URL for this request
-     */
     private String tenant;
 
-    private static IntegratedWindowsAuthenticationParametersBuilder builder() {
-
-        return new IntegratedWindowsAuthenticationParametersBuilder();
+    private static IntegratedWindowsAuthenticationParameters.IntegratedWindowsAuthenticationParametersBuilder builder() {
+        return new IntegratedWindowsAuthenticationParameters.IntegratedWindowsAuthenticationParametersBuilder();
     }
 
-    /**
-     * Builder for {@link IntegratedWindowsAuthenticationParameters}
-     *
-     * @param scopes   scopes application is requesting access to
-     * @param username identifier of user account for which to acquire token for. Usually in UPN format,
-     *                 e.g. john.doe@contoso.com.
-     * @return builder that can be used to construct IntegratedWindowsAuthenticationParameters
-     */
-    public static IntegratedWindowsAuthenticationParametersBuilder builder(Set<String> scopes, String username) {
+    public static IntegratedWindowsAuthenticationParameters.IntegratedWindowsAuthenticationParametersBuilder builder(Set<String> scopes, String username) {
+        ParameterValidationUtils.validateNotNull("scopes", scopes);
+        ParameterValidationUtils.validateNotBlank("username", username);
+        return builder().scopes(scopes).username(username);
+    }
 
-        validateNotNull("scopes", scopes);
-        validateNotBlank("username", username);
+    public Set<String> scopes() {
+        return this.scopes;
+    }
 
-        return builder()
-                .scopes(scopes)
-                .username(username);
+    public String username() {
+        return this.username;
+    }
+
+    public ClaimsRequest claims() {
+        return this.claims;
+    }
+
+    public Map<String, String> extraHttpHeaders() {
+        return this.extraHttpHeaders;
+    }
+
+    public String tenant() {
+        return this.tenant;
+    }
+
+    private IntegratedWindowsAuthenticationParameters(Set<String> scopes, String username, ClaimsRequest claims, Map<String, String> extraHttpHeaders, String tenant) {
+        if (scopes == null) {
+            throw new NullPointerException("scopes is marked non-null but is null");
+        } else if (username == null) {
+            throw new NullPointerException("username is marked non-null but is null");
+        } else {
+            this.scopes = scopes;
+            this.username = username;
+            this.claims = claims;
+            this.extraHttpHeaders = extraHttpHeaders;
+            this.tenant = tenant;
+        }
+    }
+
+    public static class IntegratedWindowsAuthenticationParametersBuilder {
+        private Set<String> scopes;
+        private String username;
+        private ClaimsRequest claims;
+        private Map<String, String> extraHttpHeaders;
+        private String tenant;
+
+        IntegratedWindowsAuthenticationParametersBuilder() {
+        }
+
+        public IntegratedWindowsAuthenticationParameters.IntegratedWindowsAuthenticationParametersBuilder scopes(Set<String> scopes) {
+            if (scopes == null) {
+                throw new NullPointerException("scopes is marked non-null but is null");
+            } else {
+                this.scopes = scopes;
+                return this;
+            }
+        }
+
+        public IntegratedWindowsAuthenticationParameters.IntegratedWindowsAuthenticationParametersBuilder username(String username) {
+            if (username == null) {
+                throw new NullPointerException("username is marked non-null but is null");
+            } else {
+                this.username = username;
+                return this;
+            }
+        }
+
+        public IntegratedWindowsAuthenticationParameters.IntegratedWindowsAuthenticationParametersBuilder claims(ClaimsRequest claims) {
+            this.claims = claims;
+            return this;
+        }
+
+        public IntegratedWindowsAuthenticationParameters.IntegratedWindowsAuthenticationParametersBuilder extraHttpHeaders(Map<String, String> extraHttpHeaders) {
+            this.extraHttpHeaders = extraHttpHeaders;
+            return this;
+        }
+
+        public IntegratedWindowsAuthenticationParameters.IntegratedWindowsAuthenticationParametersBuilder tenant(String tenant) {
+            this.tenant = tenant;
+            return this;
+        }
+
+        public IntegratedWindowsAuthenticationParameters build() {
+            return new IntegratedWindowsAuthenticationParameters(this.scopes, this.username, this.claims, this.extraHttpHeaders, this.tenant);
+        }
+
+        public String toString() {
+            return "IntegratedWindowsAuthenticationParameters.IntegratedWindowsAuthenticationParametersBuilder(scopes=" + this.scopes + ", username=" + this.username + ", claims=" + this.claims + ", extraHttpHeaders=" + this.extraHttpHeaders + ", tenant=" + this.tenant + ")";
+        }
     }
 }

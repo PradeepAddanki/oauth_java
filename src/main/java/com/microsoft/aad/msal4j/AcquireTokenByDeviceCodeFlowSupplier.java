@@ -50,7 +50,7 @@ class AcquireTokenByDeviceCodeFlowSupplier extends AuthenticationResultSupplier 
     private AuthenticationResult acquireTokenWithDeviceCode(DeviceCode deviceCode,
                                                             Authority requestAuthority) throws Exception {
         deviceCodeFlowRequest.createAuthenticationGrant(deviceCode);
-        long expirationTimeInSeconds = getCurrentSystemTimeInSeconds() + deviceCode.expiresIn();
+        long expirationTimeInSeconds = getCurrentSystemTimeInSeconds() + deviceCode.getExpiresIn();
 
         AcquireTokenByAuthorizationGrantSupplier acquireTokenByAuthorisationGrantSupplier =
                 new AcquireTokenByAuthorizationGrantSupplier(
@@ -66,7 +66,7 @@ class AcquireTokenByDeviceCodeFlowSupplier extends AuthenticationResultSupplier 
                 return acquireTokenByAuthorisationGrantSupplier.execute();
             } catch (MsalServiceException ex) {
                 if (ex.getErrorCode() != null && ex.getErrorCode().equals(AUTHORIZATION_PENDING)) {
-                    TimeUnit.SECONDS.sleep(deviceCode.interval());
+                    TimeUnit.SECONDS.sleep(deviceCode.getInterval());
                 } else {
                     throw ex;
                 }

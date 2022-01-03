@@ -1,14 +1,9 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Map;
 
 class IdToken {
 

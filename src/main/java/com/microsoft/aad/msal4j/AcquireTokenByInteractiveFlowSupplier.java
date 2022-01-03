@@ -42,7 +42,7 @@ class AcquireTokenByInteractiveFlowSupplier extends AuthenticationResultSupplier
         AuthorizationResult result;
         try {
             SystemBrowserOptions systemBrowserOptions =
-                    interactiveRequest.interactiveRequestParameters().systemBrowserOptions();
+                    interactiveRequest.getInteractiveRequestParameters().systemBrowserOptions();
 
             authorizationResultQueue = new LinkedBlockingQueue<>();
             AuthorizationResponseHandler authorizationResponseHandler =
@@ -53,7 +53,7 @@ class AcquireTokenByInteractiveFlowSupplier extends AuthenticationResultSupplier
             startHttpListener(authorizationResponseHandler);
 
             if (systemBrowserOptions != null && systemBrowserOptions.openBrowserAction() != null) {
-                interactiveRequest.interactiveRequestParameters().systemBrowserOptions().openBrowserAction()
+                interactiveRequest.getInteractiveRequestParameters().systemBrowserOptions().openBrowserAction()
                         .openBrowser(interactiveRequest.authorizationUrl());
             } else {
                 openDefaultSystemBrowser(interactiveRequest.authorizationUrl());
@@ -69,8 +69,8 @@ class AcquireTokenByInteractiveFlowSupplier extends AuthenticationResultSupplier
     }
 
     private void validateState(AuthorizationResult authorizationResult) {
-        if (StringHelper.isBlank(authorizationResult.state()) ||
-                !authorizationResult.state().equals(interactiveRequest.state())) {
+        if (StringHelper.isBlank(authorizationResult.getState()) ||
+                !authorizationResult.getState().equals(interactiveRequest.getState())) {
 
             throw new VasaraCloudException("State returned in authorization result is blank or does " +
                     "not match state sent on outgoing request",
@@ -80,9 +80,9 @@ class AcquireTokenByInteractiveFlowSupplier extends AuthenticationResultSupplier
 
     private void startHttpListener(AuthorizationResponseHandler handler) {
         // if port is unspecified, set to 0, which will cause socket to find a free port
-        int port = interactiveRequest.interactiveRequestParameters().redirectUri().getPort() == -1 ?
+        int port = interactiveRequest.getInteractiveRequestParameters().redirectUri().getPort() == -1 ?
                 0 :
-                interactiveRequest.interactiveRequestParameters().redirectUri().getPort();
+                interactiveRequest.getInteractiveRequestParameters().redirectUri().getPort();
 
         httpListener = new HttpListener();
         httpListener.startListener(port, handler);
@@ -97,7 +97,7 @@ class AcquireTokenByInteractiveFlowSupplier extends AuthenticationResultSupplier
     private void updateRedirectUrl() {
         try {
             URI updatedRedirectUrl = new URI("http://localhost:" + httpListener.getPort());
-            interactiveRequest.interactiveRequestParameters().redirectUri(updatedRedirectUrl);
+            interactiveRequest.getInteractiveRequestParameters().redirectUri(updatedRedirectUrl);
             LOG.debug("Redirect URI updated to" + updatedRedirectUrl);
         } catch (URISyntaxException ex) {
             throw new VasaraCloudException("Error updating redirect URI. Not a valid URI format",
@@ -125,7 +125,7 @@ class AcquireTokenByInteractiveFlowSupplier extends AuthenticationResultSupplier
             LOG.debug("Listening for authorization result");
             long expirationTime = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) + 120;
 
-            while (result == null && !interactiveRequest.futureReference().get().isCancelled() &&
+            while (result == null && !interactiveRequest.getFutureReference().get().isCancelled() &&
                     TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) < expirationTime) {
 
                 result = authorizationResultQueue.poll(100, TimeUnit.MILLISECONDS);
@@ -134,7 +134,7 @@ class AcquireTokenByInteractiveFlowSupplier extends AuthenticationResultSupplier
             throw new VasaraCloudException(e);
         }
 
-        if (result == null || StringHelper.isBlank(result.code())) {
+        if (result == null || StringHelper.isBlank(result.getCode())) {
             throw new VasaraCloudException("No Authorization code was returned from the server",
                     AuthenticationErrorCode.INVALID_AUTHORIZATION_RESULT);
         }
@@ -144,17 +144,17 @@ class AcquireTokenByInteractiveFlowSupplier extends AuthenticationResultSupplier
     private AuthenticationResult acquireTokenWithAuthorizationCode(AuthorizationResult authorizationResult)
             throws Exception {
         AuthorizationCodeParameters parameters = AuthorizationCodeParameters
-                .builder(authorizationResult.code(), interactiveRequest.interactiveRequestParameters().redirectUri())
-                .scopes(interactiveRequest.interactiveRequestParameters().scopes())
-                .codeVerifier(interactiveRequest.verifier())
-                .claims(interactiveRequest.interactiveRequestParameters().claims())
+                .builder(authorizationResult.getCode(), interactiveRequest.getInteractiveRequestParameters().redirectUri())
+                .scopes(interactiveRequest.getInteractiveRequestParameters().scopes())
+                .codeVerifier(interactiveRequest.getVerifier())
+                .claims(interactiveRequest.getInteractiveRequestParameters().claims())
                 .build();
 
         RequestContext context = new RequestContext(
                 clientApplication,
                 PublicApi.ACQUIRE_TOKEN_BY_AUTHORIZATION_CODE,
                 parameters,
-                interactiveRequest.requestContext().userIdentifier());
+                interactiveRequest.requestContext().getUserIdentifier());
 
         AuthorizationCodeRequest authCodeRequest = new AuthorizationCodeRequest(
                 parameters,
@@ -166,9 +166,9 @@ class AcquireTokenByInteractiveFlowSupplier extends AuthenticationResultSupplier
         //The result field of an AuthorizationResult object is only set if the response contained the 'cloud_instance_host_name' key,
         // which indicates that this token request is instance aware and should use that as the environment value
         //Otherwise, use the authority value from the client application
-        if (authorizationResult.environment() != null) {
+        if (authorizationResult.getEnvironment() != null) {
             authority = Authority.createAuthority(new URL(clientApplication.authenticationAuthority.canonicalAuthorityUrl.getProtocol(),
-                    authorizationResult.environment(),
+                    authorizationResult.getEnvironment(),
                     clientApplication.authenticationAuthority.canonicalAuthorityUrl.getFile()));
         } else {
             authority = clientApplication.authenticationAuthority;

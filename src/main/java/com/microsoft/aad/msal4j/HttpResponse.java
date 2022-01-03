@@ -1,29 +1,17 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * HTTP response
- */
-@Accessors(fluent = true)
-@Getter
 public class HttpResponse implements IHttpResponse {
 
     /**
      * HTTP response status code
      */
-    @Setter
-    private int statusCode;
+     private int statusCode;
 
     /**
      * HTTP response headers
@@ -33,7 +21,6 @@ public class HttpResponse implements IHttpResponse {
     /**
      * HTTP response body
      */
-    @Setter
     private String body;
 
     /**
@@ -60,5 +47,44 @@ public class HttpResponse implements IHttpResponse {
         } else {
             headers.remove(name);
         }
+    }
+
+    @Override
+    public int statusCode() {
+        return this.statusCode;
+    }
+
+    @Override
+    public Map<String, List<String>> headers() {
+        return null;
+    }
+
+    @Override
+    public String body() {
+        return this.body;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public Map<String, List<String>> getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Map<String, List<String>> headers) {
+        this.headers = headers;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 }

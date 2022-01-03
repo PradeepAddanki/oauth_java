@@ -1,6 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
@@ -57,16 +54,16 @@ class AcquireTokenSilentSupplier extends AuthenticationResultSupplier {
                 //As of version 3 of the telemetry schema, there is a field for collecting data about why a token was refreshed,
                 // so here we set the telemetry value based on the cause of the refresh
                 if (silentRequest.getParameters().forceRefresh()) {
-                    clientApplication.getServiceBundle().getServerSideTelemetry().getCurrentRequest().cacheInfo(
+                    clientApplication.getServiceBundle().getServerSideTelemetry().getCurrentRequest().setCacheInfo(
                             CacheTelemetry.REFRESH_FORCE_REFRESH.telemetryValue);
                 } else if (afterRefreshOn) {
-                    clientApplication.getServiceBundle().getServerSideTelemetry().getCurrentRequest().cacheInfo(
+                    clientApplication.getServiceBundle().getServerSideTelemetry().getCurrentRequest().setCacheInfo(
                             CacheTelemetry.REFRESH_REFRESH_IN.telemetryValue);
                 } else if (res.expiresOn() < currTimeStampSec) {
-                    clientApplication.getServiceBundle().getServerSideTelemetry().getCurrentRequest().cacheInfo(
+                    clientApplication.getServiceBundle().getServerSideTelemetry().getCurrentRequest().setCacheInfo(
                             CacheTelemetry.REFRESH_ACCESS_TOKEN_EXPIRED.telemetryValue);
                 } else if (StringHelper.isBlank(res.accessToken())) {
-                    clientApplication.getServiceBundle().getServerSideTelemetry().getCurrentRequest().cacheInfo(
+                    clientApplication.getServiceBundle().getServerSideTelemetry().getCurrentRequest().setCacheInfo(
                             CacheTelemetry.REFRESH_NO_ACCESS_TOKEN.telemetryValue);
                 }
 

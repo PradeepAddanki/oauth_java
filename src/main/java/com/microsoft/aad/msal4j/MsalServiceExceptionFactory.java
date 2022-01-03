@@ -26,11 +26,11 @@ class MsalServiceExceptionFactory {
                 responseContent,
                 ErrorResponse.class);
 
-        errorResponse.statusCode(httpResponse.getStatusCode());
-        errorResponse.statusMessage(httpResponse.getStatusMessage());
+        errorResponse.setStatusCode(httpResponse.getStatusCode());
+        errorResponse.setStatusMessage(httpResponse.getStatusMessage());
 
-        if (errorResponse.error() != null &&
-                errorResponse.error().equalsIgnoreCase(AuthenticationErrorCode.INVALID_GRANT)) {
+        if (errorResponse.getError() != null &&
+                errorResponse.getError().equalsIgnoreCase(AuthenticationErrorCode.INVALID_GRANT)) {
 
             if (isInteractionRequired(errorResponse.subError)) {
                 return new MsalInteractionRequiredException(errorResponse, httpResponse.getHeaderMap());
@@ -56,9 +56,9 @@ class MsalServiceExceptionFactory {
                 responseBody,
                 ErrorResponse.class);
 
-        if (!StringHelper.isBlank(errorResponse.error()) && !StringHelper.isBlank(errorResponse.errorDescription)) {
+        if (!StringHelper.isBlank(errorResponse.getError()) && !StringHelper.isBlank(errorResponse.errorDescription)) {
 
-            errorResponse.statusCode(response.statusCode());
+            errorResponse.setStatusCode(response.statusCode());
             return new MsalServiceException(
                     errorResponse,
                     response.headers());

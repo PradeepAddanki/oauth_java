@@ -6,8 +6,6 @@ import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.util.URLUtils;
 import com.nimbusds.openid.connect.sdk.token.OIDCTokens;
-import lombok.AccessLevel;
-import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Getter(AccessLevel.PACKAGE)
 class TokenRequestExecutor {
     Logger log = LoggerFactory.getLogger(TokenRequestExecutor.class);
 
@@ -138,5 +135,17 @@ class TokenRequestExecutor {
             throw MsalServiceExceptionFactory.fromHttpResponse(oauthHttpResponse);
         }
         return result;
+    }
+
+    public Authority getRequestAuthority() {
+        return requestAuthority;
+    }
+
+    public MsalRequest getMsalRequest() {
+        return msalRequest;
+    }
+
+    public ServiceBundle getServiceBundle() {
+        return serviceBundle;
     }
 }

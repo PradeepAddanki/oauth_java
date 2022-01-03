@@ -1,9 +1,7 @@
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.experimental.Accessors;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -12,8 +10,6 @@ import java.util.Map;
 /**
  * Exception type thrown when service returns an error response or other networking errors occur.
  */
-@Accessors(fluent = true)
-@Getter
 public class MsalServiceException extends VasaraCloudException {
 
     /**
@@ -43,8 +39,6 @@ public class MsalServiceException extends VasaraCloudException {
      */
     private Map<String, List<String>> headers;
 
-    @Accessors(fluent = true)
-    @Getter(AccessLevel.PACKAGE)
     private String subError;
 
     /**
@@ -66,13 +60,13 @@ public class MsalServiceException extends VasaraCloudException {
             final ErrorResponse errorResponse,
             final Map<String, List<String>> httpHeaders) {
 
-        super(errorResponse.errorDescription, errorResponse.error());
+        super(errorResponse.errorDescription, errorResponse.getError());
 
-        this.statusCode = errorResponse.statusCode();
-        this.statusMessage = errorResponse.statusMessage();
-        this.subError = errorResponse.subError();
-        this.correlationId = errorResponse.correlation_id();
-        this.claims = errorResponse.claims();
+        this.statusCode = errorResponse.getStatusCode();
+        this.statusMessage = errorResponse.getStatusMessage();
+        this.subError = errorResponse.getSubError();
+        this.correlationId = errorResponse.getCorrelation_id();
+        this.claims = errorResponse.getClaims();
         this.headers = Collections.unmodifiableMap(httpHeaders);
     }
 

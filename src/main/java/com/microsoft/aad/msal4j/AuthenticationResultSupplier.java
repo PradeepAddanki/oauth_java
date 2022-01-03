@@ -30,10 +30,10 @@ abstract class AuthenticationResultSupplier implements Supplier<IAuthenticationR
 
         URL authorityUrl = new URL(authority);
 
-        if (msalRequest.requestContext().apiParameters().tenant() != null) {
+        if (msalRequest.requestContext().getApiParameters().tenant() != null) {
             authorityUrl = new URL(authority.replace(
                     Authority.getTenant(authorityUrl, Authority.detectAuthorityType(authorityUrl)),
-                    msalRequest.requestContext().apiParameters().tenant()));
+                    msalRequest.requestContext().getApiParameters().tenant()));
         }
 
         InstanceDiscoveryMetadataEntry discoveryMetadataEntry =
@@ -62,7 +62,7 @@ abstract class AuthenticationResultSupplier implements Supplier<IAuthenticationR
 
         try (TelemetryHelper telemetryHelper =
                      clientApplication.getServiceBundle().getTelemetryManager().createTelemetryHelper(
-                             msalRequest.requestContext().telemetryRequestId(),
+                             msalRequest.requestContext().getTelemetryRequestId(),
                              msalRequest.application().clientId(),
                              apiEvent,
                              true)) {
@@ -92,8 +92,8 @@ abstract class AuthenticationResultSupplier implements Supplier<IAuthenticationR
                 }
 
                 clientApplication.getServiceBundle().getServerSideTelemetry().addFailedRequestTelemetry(
-                        String.valueOf(msalRequest.requestContext().publicApi().getApiId()),
-                        msalRequest.requestContext().correlationId(),
+                        String.valueOf(msalRequest.requestContext().getPublicApi().getApiId()),
+                        msalRequest.requestContext().getCorrelationId(),
                         error);
 
                 logException(ex);
@@ -155,11 +155,11 @@ abstract class AuthenticationResultSupplier implements Supplier<IAuthenticationR
 
     private ApiEvent initializeApiEvent(MsalRequest msalRequest) {
         ApiEvent apiEvent = new ApiEvent(clientApplication.logPii());
-        msalRequest.requestContext().telemetryRequestId(
+        msalRequest.requestContext().setTelemetryRequestId(
                 clientApplication.getServiceBundle().getTelemetryManager().generateRequestId());
-        apiEvent.setApiId(msalRequest.requestContext().publicApi().getApiId());
-        apiEvent.setCorrelationId(msalRequest.requestContext().correlationId());
-        apiEvent.setRequestId(msalRequest.requestContext().telemetryRequestId());
+        apiEvent.setApiId(msalRequest.requestContext().getPublicApi().getApiId());
+        apiEvent.setCorrelationId(msalRequest.requestContext().getCorrelationId());
+        apiEvent.setRequestId(msalRequest.requestContext().getTelemetryRequestId());
         apiEvent.setWasSuccessful(false);
 
         if (clientApplication instanceof ConfidentialClientApplication) {

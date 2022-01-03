@@ -103,19 +103,19 @@ class DefaultHttpClient implements IHttpClient {
         try {
             HttpResponse httpResponse = new HttpResponse();
             int responseCode = conn.getResponseCode();
-            httpResponse.statusCode(responseCode);
+            httpResponse.setStatusCode(responseCode);
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 is = conn.getErrorStream();
                 if (is != null) {
                     httpResponse.addHeaders(conn.getHeaderFields());
-                    httpResponse.body(inputStreamToString(is));
+                    httpResponse.setBody(inputStreamToString(is));
                 }
                 return httpResponse;
             }
 
             is = conn.getInputStream();
             httpResponse.addHeaders(conn.getHeaderFields());
-            httpResponse.body(inputStreamToString(is));
+            httpResponse.setBody(inputStreamToString(is));
             return httpResponse;
         } finally {
             if (is != null) {

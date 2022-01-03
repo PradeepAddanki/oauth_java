@@ -22,7 +22,7 @@ class DeviceCodeAuthorizationGrant extends AbstractMsalAuthorizationGrant {
      */
     DeviceCodeAuthorizationGrant(DeviceCode deviceCode, final String scopes, ClaimsRequest claims) {
         this.deviceCode = deviceCode;
-        this.correlationId = deviceCode.correlationId();
+        this.correlationId = deviceCode.getCorrelationId();
         this.scopes = scopes;
         this.claims = claims;
     }
@@ -37,7 +37,7 @@ class DeviceCodeAuthorizationGrant extends AbstractMsalAuthorizationGrant {
         final Map<String, List<String>> outParams = new LinkedHashMap<>();
         outParams.put(SCOPE_PARAM_NAME, Collections.singletonList(COMMON_SCOPES_PARAM + SCOPES_DELIMITER + scopes));
         outParams.put("grant_type", Collections.singletonList(GRANT_TYPE));
-        outParams.put("device_code", Collections.singletonList(deviceCode.deviceCode()));
+        outParams.put("device_code", Collections.singletonList(deviceCode.getDeviceCode()));
         outParams.put("client_info", Collections.singletonList("1"));
         if (claims != null) {
             outParams.put("claims", Collections.singletonList(claims.formatAsJSONString()));

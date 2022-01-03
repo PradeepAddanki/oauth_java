@@ -5,10 +5,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import lombok.NonNull;
+
 
 public class SilentParameters implements IAcquireTokenParameters {
-    @NonNull
     private Set<String> scopes;
     private IAccount account;
     private ClaimsRequest claims;
@@ -48,7 +47,7 @@ public class SilentParameters implements IAcquireTokenParameters {
         return updatedScopes;
     }
 
-    @NonNull
+
     public Set<String> scopes() {
         return this.scopes;
     }
@@ -77,7 +76,7 @@ public class SilentParameters implements IAcquireTokenParameters {
         return this.tenant;
     }
 
-    private SilentParameters(@NonNull Set<String> scopes, IAccount account, ClaimsRequest claims, String authorityUrl, boolean forceRefresh, Map<String, String> extraHttpHeaders, String tenant) {
+    private SilentParameters( Set<String> scopes, IAccount account, ClaimsRequest claims, String authorityUrl, boolean forceRefresh, Map<String, String> extraHttpHeaders, String tenant) {
         if (scopes == null) {
             throw new NullPointerException("scopes is marked non-null but is null");
         } else {
@@ -103,7 +102,7 @@ public class SilentParameters implements IAcquireTokenParameters {
         SilentParametersBuilder() {
         }
 
-        public SilentParameters.SilentParametersBuilder scopes(@NonNull Set<String> scopes) {
+        public SilentParameters.SilentParametersBuilder scopes(Set<String> scopes) {
             if (scopes == null) {
                 throw new NullPointerException("scopes is marked non-null but is null");
             } else {

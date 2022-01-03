@@ -65,15 +65,15 @@ class ServerSideTelemetry {
         }
 
         String currentRequestHeader = SCHEMA_VERSION + SCHEMA_PIPE_DELIMITER +
-                currentRequest.publicApi().getApiId() +
+                currentRequest.getPublicApi().getApiId() +
                 SCHEMA_COMMA_DELIMITER +
-                (currentRequest.cacheInfo() == -1 ? "" : currentRequest.cacheInfo()) +
+                (currentRequest.getCacheInfo() == -1 ? "" : currentRequest.getCacheInfo()) +
                 SCHEMA_COMMA_DELIMITER +
-                currentRequest.regionUsed() +
+                currentRequest.getRegionUsed() +
                 SCHEMA_COMMA_DELIMITER +
-                currentRequest.regionSource() +
+                currentRequest.getRegionSource() +
                 SCHEMA_COMMA_DELIMITER +
-                currentRequest.regionOutcome() +
+                currentRequest.getRegionOutcome() +
                 SCHEMA_PIPE_DELIMITER;
 
         if (currentRequestHeader.getBytes(StandardCharsets.UTF_8).length > CURRENT_REQUEST_MAX_SIZE) {

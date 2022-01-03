@@ -25,7 +25,7 @@ class RemoveAccountRunnable implements Runnable {
         } catch (Exception ex) {
             clientApplication.log.error(
                     LogHelper.createMessage("Execution of " + this.getClass() + " failed.",
-                            requestContext.correlationId()), ex);
+                            requestContext.getCorrelationId()), ex);
 
             throw new CompletionException(ex);
         }

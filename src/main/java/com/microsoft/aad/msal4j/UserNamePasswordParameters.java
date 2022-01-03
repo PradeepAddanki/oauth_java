@@ -3,14 +3,13 @@ package com.microsoft.aad.msal4j;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
-import lombok.NonNull;
 
 public class UserNamePasswordParameters implements IAcquireTokenParameters {
-    @NonNull
+
     private Set<String> scopes;
-    @NonNull
+
     private String username;
-    @NonNull
+
     private char[] password;
     private ClaimsRequest claims;
     private Map<String, String> extraHttpHeaders;
@@ -31,12 +30,12 @@ public class UserNamePasswordParameters implements IAcquireTokenParameters {
         return builder().scopes(scopes).username(username).password(password);
     }
 
-    @NonNull
+
     public Set<String> scopes() {
         return this.scopes;
     }
 
-    @NonNull
+
     public String username() {
         return this.username;
     }
@@ -53,7 +52,7 @@ public class UserNamePasswordParameters implements IAcquireTokenParameters {
         return this.tenant;
     }
 
-    private UserNamePasswordParameters(@NonNull Set<String> scopes, @NonNull String username, @NonNull char[] password, ClaimsRequest claims, Map<String, String> extraHttpHeaders, String tenant) {
+    private UserNamePasswordParameters(Set<String> scopes, String username, char[] password, ClaimsRequest claims, Map<String, String> extraHttpHeaders, String tenant) {
         if (scopes == null) {
             throw new NullPointerException("scopes is marked non-null but is null");
         } else if (username == null) {
@@ -86,7 +85,7 @@ public class UserNamePasswordParameters implements IAcquireTokenParameters {
         UserNamePasswordParametersBuilder() {
         }
 
-        public UserNamePasswordParameters.UserNamePasswordParametersBuilder scopes(@NonNull Set<String> scopes) {
+        public UserNamePasswordParameters.UserNamePasswordParametersBuilder scopes(Set<String> scopes) {
             if (scopes == null) {
                 throw new NullPointerException("scopes is marked non-null but is null");
             } else {
@@ -95,7 +94,7 @@ public class UserNamePasswordParameters implements IAcquireTokenParameters {
             }
         }
 
-        public UserNamePasswordParameters.UserNamePasswordParametersBuilder username(@NonNull String username) {
+        public UserNamePasswordParameters.UserNamePasswordParametersBuilder username(String username) {
             if (username == null) {
                 throw new NullPointerException("username is marked non-null but is null");
             } else {

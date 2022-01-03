@@ -1,76 +1,108 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
-
-import lombok.*;
-import lombok.experimental.Accessors;
 
 import java.util.Map;
 import java.util.Set;
-
-import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotBlank;
-import static com.microsoft.aad.msal4j.ParameterValidationUtils.validateNotNull;
-
-/**
- * Object containing parameters for refresh token request. Can be used as parameter to
- * {@link PublicClientApplication#acquireToken(RefreshTokenParameters)} or to
- * {@link ConfidentialClientApplication#acquireToken(RefreshTokenParameters)}
- * <p>
- * RefreshTokenParameters should only be used for migration scenarios (when moving from ADAL to
- * MSAL). To acquire tokens silently, use {@link AbstractClientApplicationBase#acquireTokenSilently(SilentParameters)}
- */
-@Builder
-@Accessors(fluent = true)
-@Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RefreshTokenParameters implements IAcquireTokenParameters {
-
-    /**
-     * Scopes the application is requesting access to
-     */
-    @NonNull
     private Set<String> scopes;
-
-    /**
-     * Refresh token received from the STS
-     */
-    @NonNull
     private String refreshToken;
-
-    /**
-     * Claims to be requested through the OIDC claims request parameter, allowing requests for standard and custom claims
-     */
     private ClaimsRequest claims;
-
-    /**
-     * Adds additional headers to the token request
-     */
     private Map<String, String> extraHttpHeaders;
-
-    /**
-     * Overrides the tenant value in the authority URL for this request
-     */
     private String tenant;
 
-    private static RefreshTokenParametersBuilder builder() {
-
-        return new RefreshTokenParametersBuilder();
+    private static RefreshTokenParameters.RefreshTokenParametersBuilder builder() {
+        return new RefreshTokenParameters.RefreshTokenParametersBuilder();
     }
 
-    /**
-     * Builder for {@link RefreshTokenParameters}
-     *
-     * @param scopes       scopes application is requesting access to
-     * @param refreshToken refresh token received form the STS
-     * @return builder object that can be used to construct {@link RefreshTokenParameters}
-     */
-    public static RefreshTokenParametersBuilder builder(Set<String> scopes, String refreshToken) {
+    public static RefreshTokenParameters.RefreshTokenParametersBuilder builder(Set<String> scopes, String refreshToken) {
+        ParameterValidationUtils.validateNotBlank("refreshToken", refreshToken);
+        return builder().scopes(scopes).refreshToken(refreshToken);
+    }
 
-        validateNotBlank("refreshToken", refreshToken);
 
-        return builder()
-                .scopes(scopes)
-                .refreshToken(refreshToken);
+    public Set<String> scopes() {
+        return this.scopes;
+    }
+
+
+    public String refreshToken() {
+        return this.refreshToken;
+    }
+
+    public ClaimsRequest claims() {
+        return this.claims;
+    }
+
+    public Map<String, String> extraHttpHeaders() {
+        return this.extraHttpHeaders;
+    }
+
+    public String tenant() {
+        return this.tenant;
+    }
+
+    private RefreshTokenParameters( Set<String> scopes,  String refreshToken, ClaimsRequest claims, Map<String, String> extraHttpHeaders, String tenant) {
+        if (scopes == null) {
+            throw new NullPointerException("scopes is marked non-null but is null");
+        } else if (refreshToken == null) {
+            throw new NullPointerException("refreshToken is marked non-null but is null");
+        } else {
+            this.scopes = scopes;
+            this.refreshToken = refreshToken;
+            this.claims = claims;
+            this.extraHttpHeaders = extraHttpHeaders;
+            this.tenant = tenant;
+        }
+    }
+
+    public static class RefreshTokenParametersBuilder {
+        private Set<String> scopes;
+        private String refreshToken;
+        private ClaimsRequest claims;
+        private Map<String, String> extraHttpHeaders;
+        private String tenant;
+
+        RefreshTokenParametersBuilder() {
+        }
+
+        public RefreshTokenParameters.RefreshTokenParametersBuilder scopes( Set<String> scopes) {
+            if (scopes == null) {
+                throw new NullPointerException("scopes is marked non-null but is null");
+            } else {
+                this.scopes = scopes;
+                return this;
+            }
+        }
+
+        public RefreshTokenParameters.RefreshTokenParametersBuilder refreshToken( String refreshToken) {
+            if (refreshToken == null) {
+                throw new NullPointerException("refreshToken is marked non-null but is null");
+            } else {
+                this.refreshToken = refreshToken;
+                return this;
+            }
+        }
+
+        public RefreshTokenParameters.RefreshTokenParametersBuilder claims(ClaimsRequest claims) {
+            this.claims = claims;
+            return this;
+        }
+
+        public RefreshTokenParameters.RefreshTokenParametersBuilder extraHttpHeaders(Map<String, String> extraHttpHeaders) {
+            this.extraHttpHeaders = extraHttpHeaders;
+            return this;
+        }
+
+        public RefreshTokenParameters.RefreshTokenParametersBuilder tenant(String tenant) {
+            this.tenant = tenant;
+            return this;
+        }
+
+        public RefreshTokenParameters build() {
+            return new RefreshTokenParameters(this.scopes, this.refreshToken, this.claims, this.extraHttpHeaders, this.tenant);
+        }
+
+        public String toString() {
+            return "RefreshTokenParameters.RefreshTokenParametersBuilder(scopes=" + this.scopes + ", refreshToken=" + this.refreshToken + ", claims=" + this.claims + ", extraHttpHeaders=" + this.extraHttpHeaders + ", tenant=" + this.tenant + ")";
+        }
     }
 }

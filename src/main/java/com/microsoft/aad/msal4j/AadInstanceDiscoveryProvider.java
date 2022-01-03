@@ -189,7 +189,7 @@ class AadInstanceDiscoveryProvider {
             throw MsalServiceExceptionFactory.fromHttpResponse(httpResponse);
         }
 
-        serviceBundle.getServerSideTelemetry().getCurrentRequest().regionOutcome(regionOutcomeTelemetryValue);
+        serviceBundle.getServerSideTelemetry().getCurrentRequest().setRegionOutcome(regionOutcomeTelemetryValue);
 
         return JsonHelper.convertJsonToObject(httpResponse.body(), AadInstanceDiscoveryResponse.class);
     }
@@ -240,7 +240,7 @@ class AadInstanceDiscoveryProvider {
         //Check if the REGION_NAME environment variable has a value for the region
         if (System.getenv(REGION_NAME) != null) {
             log.info("Region found in environment variable: " + System.getenv(REGION_NAME));
-            currentRequest.regionSource(RegionTelemetry.REGION_SOURCE_ENV_VARIABLE.telemetryValue);
+            currentRequest.setRegionSource(RegionTelemetry.REGION_SOURCE_ENV_VARIABLE.telemetryValue);
 
             return System.getenv(REGION_NAME);
         }
@@ -254,19 +254,19 @@ class AadInstanceDiscoveryProvider {
             //If call to IMDS endpoint was successful, return region from response body
             if (httpResponse.statusCode() == HttpHelper.HTTP_STATUS_200 && !httpResponse.body().isEmpty()) {
                 log.info("Region retrieved from IMDS endpoint: " + httpResponse.body());
-                currentRequest.regionSource(RegionTelemetry.REGION_SOURCE_IMDS.telemetryValue);
+                currentRequest.setRegionSource(RegionTelemetry.REGION_SOURCE_IMDS.telemetryValue);
 
                 return httpResponse.body();
             }
 
             log.warn(String.format("Call to local IMDS failed with status code: %s, or response was empty", httpResponse.statusCode()));
-            currentRequest.regionSource(RegionTelemetry.REGION_SOURCE_FAILED_AUTODETECT.telemetryValue);
+            currentRequest.setRegionSource(RegionTelemetry.REGION_SOURCE_FAILED_AUTODETECT.telemetryValue);
 
             return null;
         } catch (Exception e) {
             //IMDS call failed, cannot find region
             log.warn(String.format("Exception during call to local IMDS endpoint: %s", e.getMessage()));
-            currentRequest.regionSource(RegionTelemetry.REGION_SOURCE_FAILED_AUTODETECT.telemetryValue);
+            currentRequest.setRegionSource(RegionTelemetry.REGION_SOURCE_FAILED_AUTODETECT.telemetryValue);
 
             return null;
         }

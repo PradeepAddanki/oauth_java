@@ -192,7 +192,7 @@ public class TokenCache implements ITokenCache {
                     RefreshTokenCacheEntity rtEntity = createRefreshTokenCacheEntity
                             (tokenRequestExecutor, authenticationResult, environment);
 
-                    rtEntity.family_id(authenticationResult.familyId());
+                    rtEntity.setFamily_id(authenticationResult.familyId());
 
                     refreshTokens.put(rtEntity.getKey(), rtEntity);
                 }
@@ -215,7 +215,7 @@ public class TokenCache implements ITokenCache {
                                                                          AuthenticationResult authenticationResult,
                                                                          String environmentAlias) {
         RefreshTokenCacheEntity rt = new RefreshTokenCacheEntity();
-        rt.credentialType(CredentialTypeEnum.REFRESH_TOKEN.value());
+        rt.setCredentialType(CredentialTypeEnum.REFRESH_TOKEN.value());
 
         if (authenticationResult.account() != null) {
             rt.setHomeAccountId(authenticationResult.account().homeAccountId());
@@ -274,7 +274,7 @@ public class TokenCache implements ITokenCache {
                                                                AuthenticationResult authenticationResult,
                                                                String environmentAlias) {
         IdTokenCacheEntity idToken = new IdTokenCacheEntity();
-        idToken.credentialType(CredentialTypeEnum.ID_TOKEN.value());
+        idToken.setCredentialType(CredentialTypeEnum.ID_TOKEN.value());
 
         if (authenticationResult.account() != null) {
             idToken.setHomeAccountId(authenticationResult.account().homeAccountId());
@@ -282,7 +282,7 @@ public class TokenCache implements ITokenCache {
         idToken.setEnvironment(environmentAlias);
         idToken.setClientId(tokenRequestExecutor.getMsalRequest().application().clientId());
         idToken.setSecret(authenticationResult.idToken());
-        idToken.realm(tokenRequestExecutor.requestAuthority.tenant());
+        idToken.setRealm(tokenRequestExecutor.requestAuthority.tenant());
 
         if (tokenRequestExecutor.getMsalRequest() instanceof OnBehalfOfRequest) {
             OnBehalfOfRequest onBehalfOfRequest = (OnBehalfOfRequest) tokenRequestExecutor.getMsalRequest();
@@ -297,9 +297,9 @@ public class TokenCache implements ITokenCache {
                                                                        String environmentAlias) {
         AppMetadataCacheEntity appMetadataCacheEntity = new AppMetadataCacheEntity();
 
-        appMetadataCacheEntity.clientId(tokenRequestExecutor.getMsalRequest().application().clientId());
-        appMetadataCacheEntity.environment(environmentAlias);
-        appMetadataCacheEntity.familyId(authenticationResult.familyId());
+        appMetadataCacheEntity.setClientId(tokenRequestExecutor.getMsalRequest().application().clientId());
+        appMetadataCacheEntity.setEnvironment(environmentAlias);
+        appMetadataCacheEntity.setFamilyId(authenticationResult.familyId());
 
         return appMetadataCacheEntity;
     }
@@ -371,10 +371,10 @@ public class TokenCache implements ITokenCache {
      */
     private String getApplicationFamilyId(String clientId, Set<String> environmentAliases) {
         for (AppMetadataCacheEntity data : appMetadata.values()) {
-            if (data.clientId().equals(clientId) &&
-                    environmentAliases.contains(data.environment()) &&
-                    !StringHelper.isBlank(data.familyId())) {
-                return data.familyId();
+            if (data.getClientId().equals(clientId) &&
+                    environmentAliases.contains(data.getEnvironment()) &&
+                    !StringHelper.isBlank(data.getFamilyId())) {
+                return data.getFamilyId();
             }
         }
         return null;
@@ -386,10 +386,10 @@ public class TokenCache implements ITokenCache {
     private Set<String> getFamilyClientIds(String familyId, Set<String> environmentAliases) {
 
         return appMetadata.values().stream().filter
-                (appMetadata -> environmentAliases.contains(appMetadata.environment()) &&
-                        familyId.equals(appMetadata.familyId())
+                (appMetadata -> environmentAliases.contains(appMetadata.getEnvironment()) &&
+                        familyId.equals(appMetadata.getFamilyId())
 
-                ).map(AppMetadataCacheEntity::clientId).collect(Collectors.toSet());
+                ).map(AppMetadataCacheEntity::getClientId).collect(Collectors.toSet());
     }
 
     /**

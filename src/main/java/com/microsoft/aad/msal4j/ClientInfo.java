@@ -2,8 +2,6 @@ package com.microsoft.aad.msal4j;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nimbusds.jose.util.StandardCharset;
-import lombok.AccessLevel;
-import lombok.Getter;
 
 import java.util.Base64;
 

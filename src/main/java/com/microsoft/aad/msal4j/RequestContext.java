@@ -1,20 +1,10 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.util.UUID;
 
-@Accessors(fluent = true)
-@Getter(AccessLevel.PACKAGE)
 class RequestContext {
 
-    @Setter(AccessLevel.PACKAGE)
     private String telemetryRequestId;
     private String clientId;
     private String correlationId;
@@ -55,5 +45,85 @@ class RequestContext {
 
     private static String generateNewCorrelationId() {
         return UUID.randomUUID().toString();
+    }
+
+    public String getTelemetryRequestId() {
+        return telemetryRequestId;
+    }
+
+    public void setTelemetryRequestId(String telemetryRequestId) {
+        this.telemetryRequestId = telemetryRequestId;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getCorrelationId() {
+        return correlationId;
+    }
+
+    public void setCorrelationId(String correlationId) {
+        this.correlationId = correlationId;
+    }
+
+    public PublicApi getPublicApi() {
+        return publicApi;
+    }
+
+    public void setPublicApi(PublicApi publicApi) {
+        this.publicApi = publicApi;
+    }
+
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+
+    public String getApplicationVersion() {
+        return applicationVersion;
+    }
+
+    public void setApplicationVersion(String applicationVersion) {
+        this.applicationVersion = applicationVersion;
+    }
+
+    public String getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
+    }
+
+    public IAcquireTokenParameters getApiParameters() {
+        return apiParameters;
+    }
+
+    public void setApiParameters(IAcquireTokenParameters apiParameters) {
+        this.apiParameters = apiParameters;
+    }
+
+    public IClientApplicationBase getClientApplication() {
+        return clientApplication;
+    }
+
+    public void setClientApplication(IClientApplicationBase clientApplication) {
+        this.clientApplication = clientApplication;
+    }
+
+    public UserIdentifier getUserIdentifier() {
+        return userIdentifier;
+    }
+
+    public void setUserIdentifier(UserIdentifier userIdentifier) {
+        this.userIdentifier = userIdentifier;
     }
 }

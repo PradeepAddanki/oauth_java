@@ -1,8 +1,5 @@
 package com.microsoft.aad.msal4j;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -26,7 +23,7 @@ class SilentRequest extends MsalRequest {
                 Authority.createAuthority(new URL(parameters.authorityUrl()));
 
         if (parameters.forceRefresh()) {
-            application.getServiceBundle().getServerSideTelemetry().getCurrentRequest().cacheInfo(
+            application.getServiceBundle().getServerSideTelemetry().getCurrentRequest().setCacheInfo(
                     CacheTelemetry.REFRESH_FORCE_REFRESH.telemetryValue);
         }
     }

@@ -1,19 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Accessors(fluent = true)
-@Getter
-@Setter
+
 class RefreshTokenCacheEntity extends Credential {
 
     @JsonProperty("credential_type")
@@ -45,5 +38,21 @@ class RefreshTokenCacheEntity extends Credential {
         keyParts.add("");
 
         return String.join(Constants.CACHE_KEY_SEPARATOR, keyParts).toLowerCase();
+    }
+
+    public String getCredentialType() {
+        return credentialType;
+    }
+
+    public void setCredentialType(String credentialType) {
+        this.credentialType = credentialType;
+    }
+
+    public String getFamily_id() {
+        return family_id;
+    }
+
+    public void setFamily_id(String family_id) {
+        this.family_id = family_id;
     }
 }

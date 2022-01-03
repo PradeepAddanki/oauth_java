@@ -1,14 +1,10 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
 
 import com.microsoft.aad.msal4j.Exception.VasaraCloudException;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.oauth2.sdk.AuthorizationGrant;
 import com.nimbusds.oauth2.sdk.JWTBearerGrant;
-import lombok.Getter;
-import lombok.experimental.Accessors;
+
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,8 +13,7 @@ import java.util.Map;
 
 import static com.microsoft.aad.msal4j.AbstractMsalAuthorizationGrant.SCOPES_DELIMITER;
 
-@Accessors(fluent = true)
-@Getter
+
 class OnBehalfOfRequest extends MsalRequest {
 
     OnBehalfOfParameters parameters;

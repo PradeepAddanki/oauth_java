@@ -1,10 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 package com.microsoft.aad.msal4j;
-
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Map;
@@ -19,8 +13,6 @@ public class MsalInteractionRequiredException extends MsalServiceException {
      * Reason for the MsalInteractionRequiredException, enabling you to do more actions or inform the
      * user depending on your scenario.
      */
-    @Accessors(fluent = true)
-    @Getter
     private final InteractionRequiredExceptionReason reason;
 
     /**

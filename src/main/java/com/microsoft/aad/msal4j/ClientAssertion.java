@@ -1,9 +1,6 @@
 package com.microsoft.aad.msal4j;
 
 import com.nimbusds.oauth2.sdk.auth.JWTAuthentication;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.experimental.Accessors;
 
 public final class ClientAssertion implements IClientAssertion {
 
